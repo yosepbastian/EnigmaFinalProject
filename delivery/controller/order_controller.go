@@ -10,8 +10,8 @@ type OrderController struct {
 	orderUsecase usecase.OrderUseCase
 }
 
-func (oc *OrderController) GetStockByName (ctx *gin.Context) {
-	stock, err := oc.orderUsecase.GetStockByName("BBRI")
+func (oc *OrderController) GetStockByName(ctx *gin.Context) {
+	stock, err := oc.orderUsecase.GetStockByName("BBCA")
 
 	if err != nil {
 		ctx.JSON(500, gin.H{
@@ -30,6 +30,6 @@ func NewOrderController(router *gin.Engine, orderUc usecase.OrderUseCase) *Order
 		orderUsecase: orderUc,
 	}
 
-	router.GET("/stockname",newOrderController.GetStockByName)
+	router.GET("/stockname", newOrderController.GetStockByName)
 	return &newOrderController
 }
