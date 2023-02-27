@@ -10,7 +10,7 @@ type OrderController struct {
 	orderUsecase usecase.OrderUseCase
 }
 
-func (oc *OrderController) GetStockByName(ctx *gin.Context) {
+func (oc *OrderController) GetStockByName (ctx *gin.Context) {
 	stock, err := oc.orderUsecase.GetStockByName("BBCA")
 
 	if err != nil {
