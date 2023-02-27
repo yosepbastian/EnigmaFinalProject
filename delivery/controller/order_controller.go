@@ -11,7 +11,7 @@ type OrderController struct {
 }
 
 func (oc *OrderController) GetStockByName (ctx *gin.Context) {
-	stock, err := oc.orderUsecase.GetStockByName("BBCA")
+	stock, err := oc.orderUsecase.GetStockByName("BBRI")
 
 	if err != nil {
 		ctx.JSON(500, gin.H{
