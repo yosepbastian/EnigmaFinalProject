@@ -5,6 +5,7 @@ import (
 	"kel1-stockbite-projects/utils"
 
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 type OrderRepository interface{
