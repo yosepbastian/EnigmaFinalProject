@@ -1,10 +1,12 @@
 package main
 
-import "kel1-stockbite-projects/delivery"
+// import "kel1-stockbite-projects/delivery"
 
 
 func main() {
 
-	delivery.Server().Run()
+	// delivery.Server().Run()
+
+	
 	
 }
