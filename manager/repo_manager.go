@@ -4,7 +4,7 @@ import "kel1-stockbite-projects/repository"
 
 
 type RepositoryManager interface{
-	OrderRepository() repository.OrderRepository
+	StocksUseCase() repository.StocksRepository
 }
 
 type repositoryManager struct{
@@ -12,9 +12,9 @@ type repositoryManager struct{
 	infra InfraManager
 }
 
-func(r *repositoryManager) OrderRepository() repository.OrderRepository{
+func(r *repositoryManager) StocksUseCase() repository.StocksRepository{
 
-	return repository.NewOrderRepository(r.infra.SqlDb())
+	return repository.NewStocksRepository(r.infra.SqlDb())
 }
 
 

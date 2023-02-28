@@ -8,14 +8,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type appServer struct{
+type appServer struct {
 	engine *gin.Engine
 
 	useCaseManager manager.UseCaseManager
-
 }
 
-func Server() *appServer{
+func Server() *appServer {
 	ginEngine := gin.Default()
 	config := config.NewConfig()
 	infra := manager.NewInfraManager(config)
@@ -27,11 +26,11 @@ func Server() *appServer{
 	}
 }
 
-func (a *appServer) initHandlers(){
-	controller.NewOrderController(a.engine, a.useCaseManager.OrderUseCase())
+func (a *appServer) initHandlers() {
+	controller.NewStocksController(a.engine, a.useCaseManager.StocksUseCase())
 }
 
-func (a *appServer) Run(){
+func (a *appServer) Run() {
 	a.initHandlers()
 	err := a.engine.Run(":8080")
 	if err != nil {

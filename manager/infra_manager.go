@@ -3,6 +3,8 @@ package manager
 import (
 	"kel1-stockbite-projects/config"
 
+	_ "github.com/lib/pq"
+
 	"github.com/jmoiron/sqlx"
 )
 
