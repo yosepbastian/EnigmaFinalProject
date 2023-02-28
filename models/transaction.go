@@ -4,9 +4,9 @@ import "time"
 
 type Transaction struct {
 	Id              string    `json:"id"`
-	UserID          int       `json:"user_id"`
-	StockID         int       `json:"stock_id"`
-	Quantity        int       `json:"quantity"`
+	UserID          string    `json:"userid"`
+	StockID         int       `json:"stockid"`
+	Quantity        float64   `json:"quantity"`
 	Price           float64   `json:"price"`
 	TransactionType string    `json:"transaction_type"`
 	CreatedAt       time.Time `json:"created_at"`

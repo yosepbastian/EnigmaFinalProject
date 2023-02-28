@@ -9,7 +9,7 @@ import (
 
 type StocksRepository interface {
 	GetByName(name string) (models.Stocks, error)
-	UpdateById(stocks models.Stocks) error
+	Update(stocks *models.Stocks) error
 }
 
 type stocksRepository struct {
@@ -30,8 +30,8 @@ func (s *stocksRepository) GetByName(name string) (models.Stocks, error) {
 	return stocks, nil
 }
 
-func (s *stocksRepository) UpdateById(stocks models.Stocks) error {
-	_, err := s.db.NamedExec(utils.UPDATE_STOCKS_BY_ID, stocks)
+func (s *stocksRepository) Update(stocks *models.Stocks) error {
+	_, err := s.db.NamedExec(utils.UPDATE_STOCKS, stocks)
 	if err != nil {
 		return err
 	}

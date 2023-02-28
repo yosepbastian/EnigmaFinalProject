@@ -9,8 +9,7 @@ import (
 )
 
 type appServer struct {
-	engine *gin.Engine
-
+	engine         *gin.Engine
 	useCaseManager manager.UseCaseManager
 }
 
@@ -27,7 +26,8 @@ func Server() *appServer {
 }
 
 func (a *appServer) initHandlers() {
-	controller.NewStocksController(a.engine, a.useCaseManager.StocksUseCase())
+	controller.NewStocksController(a.engine, a.useCaseManager.StocksUseCase(), a.useCaseManager.BuyStocks())
+
 }
 
 func (a *appServer) Run() {

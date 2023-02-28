@@ -6,7 +6,9 @@ require github.com/joho/godotenv v1.5.1
 
 require (
 	github.com/gin-gonic/gin v1.9.0
+	github.com/google/uuid v1.3.0
 	github.com/jmoiron/sqlx v1.3.5
+	github.com/lib/pq v1.10.7
 )
 
 require (
@@ -20,7 +22,6 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
-	github.com/lib/pq v1.10.7 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
