@@ -16,7 +16,7 @@ type OrderRepository interface {
 	UpdateQuantityStock(quantity int, id string) error
 	UpdateStockUser(quantity int, userId string, stockId string) error
 	AddNewTransaction(transaction models.Transaction) error
-	GetUserBalance(userId string) (int, error)
+	GetUserBalance(userId string) (float64, error)
 	GetStockPriceById(stockId string) (int, error)
 	GetStockQuantityByID(stockId string) (int, error)
 }
@@ -64,8 +64,8 @@ func (s *orderRepository) 	GetStockPriceById(stockId string) (int, error) {
 	return price, nil
 }
 
-func (s *orderRepository) GetUserBalance(userId string) (int, error) {
-	var balance int
+func (s *orderRepository) GetUserBalance(userId string) (float64, error) {
+	var balance float64
 	err := s.db.Get(&balance, utils.GET_USER_BALANCE, userId)
 
 	if err != nil {

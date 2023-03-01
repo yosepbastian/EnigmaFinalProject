@@ -11,6 +11,6 @@ const (
 	INSERT_NEW_TRANSACTION = "INSERT into transactions(user_id, stock_id, quantity, price, transaction_type) values ($1,$2,$3,$4,$5)"
 	GET_USER_BALANCE = "SELECT balance FROM users WHERE id=$1"
 	GET_STOCK_PRICE_BY_ID = "SELECT price from stocks where id=$1"
-	GET_STOCK_QUANTITY_BY_ID = "SELECT price from stocks where id=$1"
+	GET_STOCK_QUANTITY_BY_ID = "SELECT quantity from stocks where id=$1"
 
 )

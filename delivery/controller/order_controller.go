@@ -29,18 +29,26 @@ func (oc *OrderController) GetStockByName(ctx *gin.Context) {
 func (oc *OrderController) CreateNewOrderSell(ctx *gin.Context) {
 	var newSell models.Transaction
 
-	err := oc.orderUsecase.CreateNewOrderSell(newSell)
+	if err := ctx.ShouldBindJSON(&newSell); err != nil {
+		ctx.JSON(400, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
 
+
+	err := oc.orderUsecase.CreateNewOrderSell(newSell)
 	if err != nil {
 		ctx.JSON(500, gin.H{
 			"message": err.Error(),
 		})
-	} else {
-		ctx.JSON(200, gin.H{
-			"message": "OK",
-			"data":    newSell,
-		})
+		return
 	}
+
+	ctx.JSON(200, gin.H{
+		"message": "OK",
+	})
+
 }
 
 func NewOrderController(router *gin.Engine, orderUc usecase.OrderUseCase) *OrderController {

@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 	"kel1-stockbite-projects/models"
 	"kel1-stockbite-projects/repository"
 )
@@ -48,7 +49,9 @@ func (s *orderUseCase) CreateNewOrderSell(newSell models.Transaction) error {
 		s.orderRepo.UpdateStockUser(currentQuantity, newSell.UserID, newSell.StockID)
 	}
 
+
 	balance, err := s.orderRepo.GetUserBalance(newSell.UserID)
+
 
 	if err != nil {
 
@@ -60,7 +63,8 @@ func (s *orderUseCase) CreateNewOrderSell(newSell models.Transaction) error {
 
 	}
 
-	stockQuantity, Qerr := s.orderRepo.GetStockQuantityByID(newSell.UserID)
+	stockQuantity, Qerr := s.orderRepo.GetStockQuantityByID(newSell.StockID)
+	
 
 	if Qerr != nil {
 		return errors.New("error has occurred when trying to get stock quantity")
@@ -75,6 +79,9 @@ func (s *orderUseCase) CreateNewOrderSell(newSell models.Transaction) error {
 	}
 
 	Terr := s.orderRepo.AddNewTransaction(newSell)
+
+	fmt.Println(Terr)
+
 
 	if Terr != nil {
 		return errors.New("error has occurred when trying to add new transaction")
