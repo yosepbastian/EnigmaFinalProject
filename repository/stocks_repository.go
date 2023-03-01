@@ -10,7 +10,7 @@ import (
 type StocksRepository interface {
 	GetByName(name string) (models.Stocks, error)
 	Update(stocks *models.Stocks) error
-	
+	GetAll() ([]models.Stocks, error)
 }
 
 type stocksRepository struct {
@@ -37,6 +37,14 @@ func (s *stocksRepository) Update(stocks *models.Stocks) error {
 		return err
 	}
 	return nil
+}
+func (s *stocksRepository) GetAll() ([]models.Stocks, error) {
+	var stocks []models.Stocks
+	err := s.db.Select(&stocks, utils.GetAll)
+	if err != nil {
+		return nil, err
+	}
+	return stocks, nil
 }
 
 func NewStocksRepository(db *sqlx.DB) StocksRepository {

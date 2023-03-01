@@ -8,6 +8,7 @@ import (
 type StocksUseCase interface {
 	GetStocksByName(stocksName string) (models.Stocks, error)
 	UpdateByName(stocks *models.Stocks) error
+	GetAll() ([]models.Stocks, error)
 }
 
 type stocksUseCase struct {
@@ -19,6 +20,9 @@ func (s *stocksUseCase) GetStocksByName(stocksName string) (models.Stocks, error
 }
 func (s *stocksUseCase) UpdateByName(stocks *models.Stocks) error {
 	return s.stocksRepo.Update(stocks)
+}
+func (s *stocksUseCase) GetAll() ([]models.Stocks, error) {
+	return s.stocksRepo.GetAll()
 }
 
 func NewStocksUseCase(sRepo repository.StocksRepository) StocksUseCase {

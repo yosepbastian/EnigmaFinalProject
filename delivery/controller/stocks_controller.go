@@ -12,8 +12,8 @@ type StocksController struct {
 	transactions usecase.TransactionUseCase
 }
 
-func (pc *StocksController) GetById(ctx *gin.Context) {
-	customer, err := pc.stocks.GetStocksByName("BBRI")
+func (pc *StocksController) GetAll(ctx *gin.Context) {
+	stocks, err := pc.stocks.GetAll()
 	if err != nil {
 		ctx.JSON(500, gin.H{
 			"message": err.Error(),
@@ -21,7 +21,7 @@ func (pc *StocksController) GetById(ctx *gin.Context) {
 	} else {
 		ctx.JSON(200, gin.H{
 			"message": "OK",
-			"data":    customer,
+			"data":    stocks,
 		})
 	}
 }
@@ -53,7 +53,7 @@ func NewStocksController(router *gin.Engine, stocksUc usecase.StocksUseCase, tra
 		stocksUc,
 		transactionsUc,
 	}
-	router.GET("/stocks/name", newStocksController.GetById)
+	router.GET("/stocks", newStocksController.GetAll)
 	router.POST("/stocks/buy", newStocksController.BuyStocks)
 	return &newStocksController
 }
