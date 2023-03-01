@@ -19,7 +19,7 @@ const (
 
 	//transaction
 
-	INSERT_TRANSACTION = `INSERT INTO transactions (id, user_id, stock_id, quantity, price, transaction_type, created_at) VALUES(:id, :userid, :stockid, :quantity, :price, :transactiontype, :createdat)`
+	INSERT_TRANSACTION = `INSERT INTO transactions (id, user_id, stock_id, quantity, price, transaction_type) VALUES(:id, :userid, :stockid, :quantity, :price, :transactiontype)`
 
 	SELECT_STOCK_NAME = "SELECT name, price FROM stocks where name=$1"
 	SELECT_QUANTITY_STOCK_USER = "SELECT quantity FROM portfolios WHERE user_id=$1 AND stock_id=$2"

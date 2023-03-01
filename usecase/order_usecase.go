@@ -27,6 +27,8 @@ func (s *orderUseCase) CreateNewOrderSell(newSell models.Transaction) error {
 	stockAvailable, isStockAvailable := s.orderRepo.CheckQuantityStockUser(newSell.UserID, stockId)
 
 	currentQuantity := stockAvailable - int (newSell.Quantity)
+	fmt.Println("error", stockAvailable)
+
 
 	if isStockAvailable != nil {
 
@@ -54,6 +56,7 @@ func (s *orderUseCase) CreateNewOrderSell(newSell models.Transaction) error {
 
 
 	balance, err := s.orderRepo.GetUserBalance(newSell.UserID)
+
 
 
 	if err != nil {
