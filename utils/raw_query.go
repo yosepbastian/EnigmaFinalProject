@@ -8,6 +8,7 @@ const (
 	SELECT_EMAIL_FOR_UPDATE = `SELECT * FROM users WHERE email = $1 FOR UPDATE`
 	UPDATE_USER             = `UPDATE users SET balance = :balance WHERE id = :id`
 
+<<<<<<< HEAD
 	//stocks
 	SELECT_STOCKS_BY_NAME = `SELECT * FROM stocks WHERE name=$1`
 	UPDATE_STOCKS         = `UPDATE stocks SET quantity=:quantity where name= :name`
@@ -21,3 +22,17 @@ const (
 
 	INSERT_TRANSACTION = `INSERT INTO transactions (id, user_id, stock_id, quantity, price, transaction_type, created_at) VALUES(:id, :userid, :stockid, :quantity, :price, :transactiontype, :createdat)`
 )
+=======
+	SELECT_STOCK_NAME = "SELECT name, price FROM stocks where name=$1"
+	SELECT_QUANTITY_STOCK_USER = "SELECT quantity FROM portfolios WHERE user_id=$1 AND stock_id=$2"
+	UPDATE_QUANTITY_STOCK_USER = "UPDATE portfolios SET quantity=$1 WHERE user_id=$2 AND stock_id=$3"
+	DELETE_STOCK_USER = "DELETE FROM portfolios WHERE user_id=$1 AND stock_id=$2"
+	UPDATE_USER_BALANCE = "UPDATE users SET balance=$1 WHERE id=$2"
+	UPDATE_QUANTITY_STOCK = "UPDATE stocks SET quantity=$1 WHERE id=$2"
+	INSERT_NEW_TRANSACTION = "INSERT into transactions(user_id, stock_id, quantity, price, transaction_type) values ($1,$2,$3,$4,$5)"
+	GET_USER_BALANCE = "SELECT balance FROM users WHERE id=$1"
+	GET_STOCK_PRICE_BY_ID = "SELECT price from stocks where id=$1"
+	GET_STOCK_QUANTITY_BY_ID = "SELECT quantity from stocks where id=$1"
+
+)
+>>>>>>> 04-Musa
