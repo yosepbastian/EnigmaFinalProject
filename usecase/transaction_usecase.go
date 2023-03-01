@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"kel1-stockbite-projects/models"
 	"kel1-stockbite-projects/repository"
-	"time"
 
 	"github.com/google/uuid"
 )
@@ -94,7 +93,6 @@ func (t *transactionUseCase) BuyStocks(userId string, email string, stockName st
 		Quantity:        quantity,
 		Price:           totalCostFloat,
 		TransactionType: "buy",
-		CreatedAt:       time.Now(),
 	}
 
 	if err := t.InsertNewTransaction(transaction); err != nil {

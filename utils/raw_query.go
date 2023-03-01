@@ -8,7 +8,6 @@ const (
 	SELECT_EMAIL_FOR_UPDATE = `SELECT * FROM users WHERE email = $1 FOR UPDATE`
 	UPDATE_USER             = `UPDATE users SET balance = :balance WHERE id = :id`
 
-<<<<<<< HEAD
 	//stocks
 	SELECT_STOCKS_BY_NAME = `SELECT * FROM stocks WHERE name=$1`
 	UPDATE_STOCKS         = `UPDATE stocks SET quantity=:quantity where name= :name`
@@ -21,8 +20,7 @@ const (
 	//transaction
 
 	INSERT_TRANSACTION = `INSERT INTO transactions (id, user_id, stock_id, quantity, price, transaction_type, created_at) VALUES(:id, :userid, :stockid, :quantity, :price, :transactiontype, :createdat)`
-)
-=======
+
 	SELECT_STOCK_NAME = "SELECT name, price FROM stocks where name=$1"
 	SELECT_QUANTITY_STOCK_USER = "SELECT quantity FROM portfolios WHERE user_id=$1 AND stock_id=$2"
 	UPDATE_QUANTITY_STOCK_USER = "UPDATE portfolios SET quantity=$1 WHERE user_id=$2 AND stock_id=$3"
@@ -35,4 +33,3 @@ const (
 	GET_STOCK_QUANTITY_BY_ID = "SELECT quantity from stocks where id=$1"
 
 )
->>>>>>> 04-Musa
