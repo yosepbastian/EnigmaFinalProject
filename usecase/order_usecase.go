@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"kel1-stockbite-projects/models"
 	"kel1-stockbite-projects/repository"
+	"strconv"
 )
 
 type OrderUseCase interface {
@@ -21,7 +22,9 @@ func (s *orderUseCase) CreateNewOrderSell(newSell models.Transaction) error {
 
 	var tempProvit float64
 
-	stockAvailable, isStockAvailable := s.orderRepo.CheckQuantityStockUser(newSell.UserID, newSell.StockID)
+	stockId := strconv.Itoa(newSell.StockID)
+
+	stockAvailable, isStockAvailable := s.orderRepo.CheckQuantityStockUser(newSell.UserID, stockId)
 
 	currentQuantity := stockAvailable - newSell.Quantity
 
