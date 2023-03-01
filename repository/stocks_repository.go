@@ -10,6 +10,7 @@ import (
 type StocksRepository interface {
 	GetByName(name string) (models.Stocks, error)
 	Update(stocks *models.Stocks) error
+	
 }
 
 type stocksRepository struct {

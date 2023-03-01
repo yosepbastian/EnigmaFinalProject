@@ -13,11 +13,11 @@ const (
 	UPDATE_STOCKS         = `UPDATE stocks SET quantity=:quantity where name= :name`
 
 	//portfolios
-	INSERT_PORTFOLIOS         = `INSERT INTO portfolios (id, user_id, stock_id, quantity) VALUES (:id, :user_id, :stock_id, :quantity)`
-	GET_BY_USERID_AND_STOCKID = `SELECT id, user_id, stock_id, quantity FROM portfolios WHERE user_id = $1 AND stock_id = $2;`
-	UPDATE_PORTFOLIOS         = `UPDATE portfolios SET quantity = $1 WHERE user_id = $2 AND stock_id = $3`
+	INSERT_PORTFOLIOS           = `INSERT INTO portfolios (id, user_id, stock_id, quantity) VALUES (:id, :userid, :stockid, :quantity)`
+	GET_BY_USER_ID_AND_STOCK_ID = `SELECT * FROM portfolios WHERE user_id = $1 AND stock_id = $2`
+	UPDATE_PORTFOLIOS           = `UPDATE portfolios SET quantity = :quantity WHERE user_id = :userid AND stock_id = :stockid`
 
 	//transaction
 
-	INSERT_TRANSACTION = `INSERT INTO transactions (id, user_id, stock_id, quantity, price, transaction_type, created_at) VALUES(:id, :user_id, :stock_id, :quantity, :price, :transaction_type, :created_at)`
+	INSERT_TRANSACTION = `INSERT INTO transactions (id, user_id, stock_id, quantity, price, transaction_type, created_at) VALUES(:id, :userid, :stockid, :quantity, :price, :transactiontype, :createdat)`
 )

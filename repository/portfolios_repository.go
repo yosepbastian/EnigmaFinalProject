@@ -9,17 +9,8 @@ import (
 
 type PortFoliosRepository interface {
 	Insert(tx *models.PortFolios) error
-	GetByUserIDAndStockID(userID string, stockID int) (*models.PortFolios, error)
+	GetByIdandStockId(userID string, stockID int) (models.PortFolios, error)
 	Update(p *models.PortFolios) error
-}
-
-func (r *portFoliosRepository) Update(p *models.PortFolios) error {
-
-	_, err := r.db.Exec(utils.UPDATE_PORTFOLIOS, p.Quantity, p.UserID, p.StockID)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 type portFoliosRepository struct {
@@ -35,15 +26,26 @@ func (p *portFoliosRepository) Insert(tx *models.PortFolios) error {
 	return nil
 }
 
-func (p *portFoliosRepository) GetByUserIDAndStockID(userID string, stockID int) (*models.PortFolios, error) {
-	var portfolio models.PortFolios
-
-	err := p.db.Get(&portfolio, utils.GET_BY_USERID_AND_STOCKID, userID, stockID)
+func (r *portFoliosRepository) Update(p *models.PortFolios) error {
+	_, err := r.db.NamedExec(utils.UPDATE_PORTFOLIOS, p)
 	if err != nil {
-		panic(err.Error())
+		return err
 	}
+	return nil
+}
 
-	return &portfolio, nil
+func (p *portFoliosRepository) GetByIdandStockId(userID string, stockID int) (models.PortFolios, error) {
+	var portfolio models.PortFolios
+	err := p.db.QueryRow(utils.GET_BY_USER_ID_AND_STOCK_ID, userID, stockID).Scan(
+		&portfolio.Id,
+		&portfolio.UserID,
+		&portfolio.StockID,
+		&portfolio.Quantity,
+	)
+	if err != nil {
+		return models.PortFolios{}, err
+	}
+	return portfolio, nil
 }
 
 func NewPortFoliosRepository(db *sqlx.DB) PortFoliosRepository {

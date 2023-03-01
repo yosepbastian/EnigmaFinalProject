@@ -8,7 +8,7 @@ import (
 type PortfoliosUseCase interface {
 	InsertPortfolios(tx *models.PortFolios) error
 	Update(p *models.PortFolios) error
-	GetByUserIDAndStockID(userID string, stockID int) (*models.PortFolios, error)
+	GetByUserID(userID string, stockId int) (models.PortFolios, error)
 }
 
 type portfoliosUseCase struct {
@@ -18,8 +18,8 @@ type portfoliosUseCase struct {
 func (p *portfoliosUseCase) InsertPortfolios(tx *models.PortFolios) error {
 	return p.portfoliosRepo.Insert(tx)
 }
-func (p *portfoliosUseCase) GetByUserIDAndStockID(userID string, stockID int) (*models.PortFolios, error) {
-	return p.portfoliosRepo.GetByUserIDAndStockID(userID, stockID)
+func (p *portfoliosUseCase) GetByUserID(userID string, stockId int) (models.PortFolios, error) {
+	return p.portfoliosRepo.GetByIdandStockId(userID, stockId)
 }
 func (p *portfoliosUseCase) Update(pr *models.PortFolios) error {
 	return p.portfoliosRepo.Update(pr)

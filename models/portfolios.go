@@ -1,8 +1,8 @@
 package models
 
 type PortFolios struct {
-	Id       int    `json:"id"`
-	UserID   string `json:"user_id"`
-	StockID  int    `json:"stock_id"`
-	Quantity int    `json:"quantity"`
+	Id       string  `json:"id"`
+	UserID   string  `json:"userid"`
+	StockID  int     `json:"stockid"`
+	Quantity float64 `json:"quantity"`
 }
