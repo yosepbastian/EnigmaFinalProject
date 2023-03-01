@@ -7,6 +7,5 @@ type OrderRequest struct {
 	StockName string `json:"stockName" binding:"required"`
 	Quantity  float64    `json:"quantity" binding:"required"`
 	Price     float64    `json:"price" binding:"required"`
-
 	
 }

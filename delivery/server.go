@@ -26,7 +26,7 @@ func Server() *appServer {
 }
 
 func (a *appServer) initHandlers() {
-	controller.NewStocksController(a.engine, a.useCaseManager.StocksUseCase(), a.useCaseManager.BuyStocks())
+	controller.NewStocksController(a.engine, a.useCaseManager.StocksUseCase(), a.useCaseManager.BuyStocks(), a.useCaseManager.OrderUseCase())
 
 }
 
