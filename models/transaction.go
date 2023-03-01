@@ -1,6 +1,5 @@
 package models
 
-import "time"
 
 type Transaction struct {
 	Id              string    `json:"id"`
@@ -9,5 +8,4 @@ type Transaction struct {
 	Quantity        float64   `json:"quantity"`
 	Price           float64   `json:"price"`
 	TransactionType string    `json:"transactiontype"`
-	CreatedAt       time.Time `json:"createdat"`
 }
