@@ -7,6 +7,7 @@ type RepositoryManager interface {
 	PortfoliosRepository() repository.PortFoliosRepository
 	TransactionRepository() repository.TransactionRepository
 	StocksRepository() repository.StocksRepository
+	OrderRepository() repository.OrderRepository
 }
 
 type repositoryManager struct {
@@ -25,6 +26,12 @@ func (r *repositoryManager) TransactionRepository() repository.TransactionReposi
 func (r *repositoryManager) StocksRepository() repository.StocksRepository {
 	return repository.NewStocksRepository(r.infra.SqlDb())
 }
+
+func(r *repositoryManager) OrderRepository() repository.OrderRepository{
+
+	return repository.NewOrderRepository(r.infra.SqlDb())
+}
+
 
 func NewRepositoryManager(infraManager InfraManager) RepositoryManager {
 	return &repositoryManager{

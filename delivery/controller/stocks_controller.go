@@ -10,10 +10,11 @@ import (
 type StocksController struct {
 	stocks       usecase.StocksUseCase
 	transactions usecase.TransactionUseCase
+	sell usecase.OrderUseCase
 }
 
 func (pc *StocksController) GetById(ctx *gin.Context) {
-	customer, err := pc.stocks.GetStocksByName("BBRI")
+	customer, err := pc.stocks.GetStocksByName("BBCA")
 	if err != nil {
 		ctx.JSON(500, gin.H{
 			"message": err.Error(),
@@ -48,12 +49,39 @@ func (pc *StocksController) BuyStocks(ctx *gin.Context) {
 	})
 }
 
-func NewStocksController(router *gin.Engine, stocksUc usecase.StocksUseCase, transactionsUc usecase.TransactionUseCase) *StocksController {
+
+func (oc *StocksController) CreateNewOrderSell(ctx *gin.Context) {
+	var newSell models.Transaction
+
+	if err := ctx.ShouldBindJSON(&newSell); err != nil {
+		ctx.JSON(400, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+
+	err := oc.sell.CreateNewOrderSell(newSell)
+	if err != nil {
+		ctx.JSON(500, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"message": "OK",
+	})
+}
+
+func NewStocksController(router *gin.Engine, stocksUc usecase.StocksUseCase, transactionsUc usecase.TransactionUseCase, orderUc usecase.OrderUseCase) *StocksController {
 	newStocksController := StocksController{
 		stocksUc,
 		transactionsUc,
+		orderUc,
 	}
 	router.GET("/stocks/name", newStocksController.GetById)
 	router.POST("/stocks/buy", newStocksController.BuyStocks)
+	router.POST("stocks/sell", newStocksController.CreateNewOrderSell)
 	return &newStocksController
 }
