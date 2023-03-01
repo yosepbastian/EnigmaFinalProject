@@ -27,10 +27,9 @@ func (oc *OrderController) GetStockByName(ctx *gin.Context) {
 }
 
 func (oc *OrderController) CreateNewOrderSell(ctx *gin.Context) {
-	var stock models.Stocks
-	var userId string
+	var newSell models.Transaction
 
-	err := oc.orderUsecase.CreateNewOrderSell(stock, userId)
+	err := oc.orderUsecase.CreateNewOrderSell(newSell)
 
 	if err != nil {
 		ctx.JSON(500, gin.H{
@@ -39,7 +38,7 @@ func (oc *OrderController) CreateNewOrderSell(ctx *gin.Context) {
 	} else {
 		ctx.JSON(200, gin.H{
 			"message": "OK",
-			"data":    stock,
+			"data":    newSell,
 		})
 	}
 }
@@ -50,6 +49,6 @@ func NewOrderController(router *gin.Engine, orderUc usecase.OrderUseCase) *Order
 	}
 
 	router.GET("/stockname", newOrderController.GetStockByName)
-	router.POST("/sel", newOrderController.CreateNewOrderSell)
+	router.POST("/sell", newOrderController.CreateNewOrderSell)
 	return &newOrderController
 }

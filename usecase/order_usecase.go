@@ -4,12 +4,11 @@ import (
 	"errors"
 	"kel1-stockbite-projects/models"
 	"kel1-stockbite-projects/repository"
-	"strconv"
 )
 
 type OrderUseCase interface {
 	// CreateNewOrderBuy(newBuy models.Stocks) error
-	CreateNewOrderSell(newSell models.Stocks, userId string) error
+	CreateNewOrderSell(newSell models.Transaction) error
 	GetStockByName(name string) (models.Stocks, error)
 }
 
@@ -17,12 +16,11 @@ type orderUseCase struct {
 	orderRepo repository.OrderRepository
 }
 
-func (s *orderUseCase) CreateNewOrderSell(newSell models.Stocks, userId string) error {
+func (s *orderUseCase) CreateNewOrderSell(newSell models.Transaction) error {
 
-	stockId := strconv.Itoa(newSell.Id)
 	var tempProvit float64
 
-	stockAvailable, isStockAvailable := s.orderRepo.CheckQuantityStockUser(userId, stockId)
+	stockAvailable, isStockAvailable := s.orderRepo.CheckQuantityStockUser(newSell.UserID, newSell.StockID)
 
 	currentQuantity := stockAvailable - newSell.Quantity
 
@@ -45,12 +43,12 @@ func (s *orderUseCase) CreateNewOrderSell(newSell models.Stocks, userId string) 
 
 	if currentQuantity == 0 {
 
-		s.orderRepo.DeleteStockUser(userId, stockId)
+		s.orderRepo.DeleteStockUser(newSell.UserID, newSell.StockID)
 	} else {
-		s.orderRepo.UpdateStockUser(currentQuantity, userId, stockId)
+		s.orderRepo.UpdateStockUser(currentQuantity, newSell.UserID, newSell.StockID)
 	}
 
-	balance, err := s.orderRepo.GetUserBalance(userId)
+	balance, err := s.orderRepo.GetUserBalance(newSell.UserID)
 
 	if err != nil {
 
@@ -58,25 +56,25 @@ func (s *orderUseCase) CreateNewOrderSell(newSell models.Stocks, userId string) 
 
 	} else {
 		newBalance := tempProvit + float64(balance)
-		s.orderRepo.UpdateUserBalance(int(newBalance), userId)
+		s.orderRepo.UpdateUserBalance(int(newBalance), newSell.UserID)
 
 	}
 
-	stockQuantity, Qerr := s.orderRepo.GetStockQuantityByID(stockId)
+	stockQuantity, Qerr := s.orderRepo.GetStockQuantityByID(newSell.UserID)
 
 	if Qerr != nil {
 		return errors.New("error has occurred when trying to get stock quantity")
 	} else {
 
 		newStockQuantity := stockQuantity + (newSell.Quantity * 100)
-		err := s.orderRepo.UpdateQuantityStock(newStockQuantity, stockId)
+		err := s.orderRepo.UpdateQuantityStock(newStockQuantity, newSell.StockID)
 
 		if err != nil {
 			return errors.New("error has occurred when trying to update stock quantity")
 		}
 	}
 
-	Terr := s.orderRepo.AddNewTransaction(userId, stockId, newSell.Quantity, int(newSell.Price), "SELL")
+	Terr := s.orderRepo.AddNewTransaction(newSell)
 
 	if Terr != nil {
 		return errors.New("error has occurred when trying to add new transaction")

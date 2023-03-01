@@ -15,7 +15,7 @@ type OrderRepository interface {
 	UpdateUserBalance(balance int, userId string) error
 	UpdateQuantityStock(quantity int, id string) error
 	UpdateStockUser(quantity int, userId string, stockId string) error
-	AddNewTransaction(userId string, stockId string, quantity int, price int, transaction_type string) error
+	AddNewTransaction(transaction models.Transaction) error
 	GetUserBalance(userId string) (int, error)
 	GetStockPriceById(stockId string) (int, error)
 	GetStockQuantityByID(stockId string) (int, error)
@@ -128,9 +128,9 @@ func (s *orderRepository) UpdateStockUser(quantity int, userId string, stockId s
 	return nil
 }
 
-func (s *orderRepository) AddNewTransaction(userId string, stockId string, quantity int, price int, transaction_type string) error {
+func (s *orderRepository) AddNewTransaction(transaction models.Transaction) error {
 
-	_, err := s.db.Exec(utils.INSERT_NEW_TRANSACTION, userId, stockId, quantity, price, transaction_type)
+	_, err := s.db.Exec(utils.INSERT_NEW_TRANSACTION, transaction.UserID, transaction.StockID, transaction.Quantity, transaction.Price, transaction.TransactionType)
 
 	if err != nil {
 		return err
