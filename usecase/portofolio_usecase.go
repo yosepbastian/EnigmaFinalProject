@@ -6,23 +6,43 @@ import (
 )
 
 type PortfoliosUseCase interface {
-	InsertPortfolios(tx *models.PortFolios) error
-	Update(p *models.PortFolios) error
-	GetByUserID(userID string, stockId int) (models.PortFolios, error)
+	InsertPortfolios(porto *models.PortFolios) error
+	GetPortoByIdandStockId(userID string, stockID int) (models.PortFolios, error)
+	Update(porto *models.PortFolios) error
+	Delete(userId string, stockId string) error
+	CheckAndCreatePortUser(userId string, stockId int, quantity float64) error
+	CheckQtyStockUser(userId string, stockId string) (int, error)
+	UpdatePortoStok(quantity int, userId string, stockId string) error
 }
 
 type portfoliosUseCase struct {
 	portfoliosRepo repository.PortFoliosRepository
 }
 
-func (p *portfoliosUseCase) InsertPortfolios(tx *models.PortFolios) error {
-	return p.portfoliosRepo.Insert(tx)
+func (p *portfoliosUseCase) InsertPortfolios(porto *models.PortFolios) error {
+	return p.portfoliosRepo.Insert(porto)
 }
-func (p *portfoliosUseCase) GetByUserID(userID string, stockId int) (models.PortFolios, error) {
-	return p.portfoliosRepo.GetByIdandStockId(userID, stockId)
+
+func (p *portfoliosUseCase) GetPortoByIdandStockId(userID string, stockID int) (models.PortFolios, error) {
+	return p.portfoliosRepo.GetByIdandStockId(userID, stockID)
 }
-func (p *portfoliosUseCase) Update(pr *models.PortFolios) error {
-	return p.portfoliosRepo.Update(pr)
+
+func (p *portfoliosUseCase) Delete(userId string, stockId string) error {
+	return p.portfoliosRepo.Delete(userId, stockId)
+}
+func (p *portfoliosUseCase) Update(porto *models.PortFolios) error {
+	return p.portfoliosRepo.Update(porto)
+}
+
+func (p *portfoliosUseCase) CheckAndCreatePortUser(userId string, stockId int, quantity float64) error {
+	return p.portfoliosRepo.CheckAndCreate(userId, stockId, quantity)
+}
+
+func (p *portfoliosUseCase) CheckQtyStockUser(userId string, stockId string) (int, error) {
+	return p.portfoliosRepo.CheckQtyStock(userId, stockId)
+}
+func (p *portfoliosUseCase) UpdatePortoStok(quantity int, userId string, stockId string) error {
+	return p.portfoliosRepo.UpdatePortoStok(quantity, userId, stockId)
 }
 
 func NewPortfoliosUseCase(pRepo repository.PortFoliosRepository) PortfoliosUseCase {
