@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"kel1-stockbite-projects/delivery/middleware"
 	"kel1-stockbite-projects/models"
 	"kel1-stockbite-projects/usecase"
 
@@ -8,9 +9,12 @@ import (
 )
 
 type StocksController struct {
+	rg *gin.RouterGroup
+
 	stocks       usecase.StocksUseCase
 	transactions usecase.TransactionUseCase
-	sell usecase.OrderUseCase
+	sell         usecase.OrderUseCase
+	authUseCase  usecase.AuthUseCase
 }
 
 func (pc *StocksController) GetById(ctx *gin.Context) {
@@ -49,17 +53,62 @@ func (pc *StocksController) BuyStocks(ctx *gin.Context) {
 	})
 }
 
+func (oc *StocksController) UserAuth(ctx *gin.Context) {
+	var userLogin models.UserLogin
 
-func (oc *StocksController) CreateNewOrderSell(ctx *gin.Context) {
-	var newSell models.Transaction
 
-	if err := ctx.ShouldBindJSON(&newSell); err != nil {
+	if err := ctx.ShouldBindJSON(&userLogin); err != nil {
 		ctx.JSON(400, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
 
+	token, err := oc.authUseCase.UserAuth(userLogin)
+	if err != nil {
+		ctx.JSON(500, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"message": token,
+	})
+}
+
+// func (pc *StocksController) UserAuth(ctx *gin.Context) {
+// 	var user models.UserLogin
+
+// 	if err := ctx.ShouldBindJSON(&user); err != nil {
+// 		ctx.JSON(http.StatusBadRequest, gin.H{
+// 			"message": "can't bind struct",
+// 		})
+// 		return
+// 	}
+
+// 	token, err := pc.authUseCase.UserAuth(user)
+
+// 	if err != nil {
+// 		ctx.AbortWithStatus(401)
+// 		return
+// 	}
+
+// 	ctx.JSON(200, gin.H{
+// 		"token": token,
+// 	})
+
+// }
+
+func (oc *StocksController) CreateNewOrderSell(ctx *gin.Context) {
+	var newSell models.Transaction
+
+	if err := ctx.ShouldBindJSON(newSell); err != nil {
+		ctx.JSON(400, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
 
 	err := oc.sell.CreateNewOrderSell(newSell)
 	if err != nil {
@@ -74,14 +123,18 @@ func (oc *StocksController) CreateNewOrderSell(ctx *gin.Context) {
 	})
 }
 
-func NewStocksController(router *gin.Engine, stocksUc usecase.StocksUseCase, transactionsUc usecase.TransactionUseCase, orderUc usecase.OrderUseCase) *StocksController {
+func NewStocksController(routerGroup *gin.RouterGroup, stocksUc usecase.StocksUseCase, transactionsUc usecase.TransactionUseCase, orderUc usecase.OrderUseCase, authUseCase usecase.AuthUseCase, tokenMdw middleware.AuthTokenMiddleWare) *StocksController {
 	newStocksController := StocksController{
-		stocksUc,
-		transactionsUc,
-		orderUc,
+		rg:           routerGroup,
+		stocks:       stocksUc,
+		transactions: transactionsUc,
+		sell:         orderUc,
+		authUseCase:  authUseCase,
 	}
-	router.GET("/stocks/name", newStocksController.GetById)
-	router.POST("/stocks/buy", newStocksController.BuyStocks)
-	router.POST("stocks/sell", newStocksController.CreateNewOrderSell)
+	newStocksController.rg.POST("/auth", newStocksController.UserAuth)
+	protectedGroup := newStocksController.rg.Group("/order", tokenMdw.RequireToken())
+	protectedGroup.GET("/name", newStocksController.GetById)
+	protectedGroup.POST("/buy", newStocksController.BuyStocks)
+	protectedGroup.POST("/sell", newStocksController.CreateNewOrderSell)
 	return &newStocksController
 }

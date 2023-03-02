@@ -6,6 +6,7 @@ type UseCaseManager interface {
 	StocksUseCase() usecase.StocksUseCase
 	BuyStocks() usecase.TransactionUseCase
 	OrderUseCase() usecase.OrderUseCase
+	
 }
 
 type usecaseManager struct {

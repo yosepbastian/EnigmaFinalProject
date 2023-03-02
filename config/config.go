@@ -3,12 +3,22 @@ package config
 import (
 	"fmt"
 	"os"
+	"time"
 
+	"github.com/golang-jwt/jwt"
 	"github.com/joho/godotenv"
 )
 
 type Config struct {
 	DataSourceName string
+	TokenConfig 
+}
+
+type TokenConfig struct{
+	ApplicationName string
+	JwtSignatureKey string
+	JwtSigningMethod *jwt.SigningMethodHMAC
+	AccessTokenLifeTime time.Duration
 }
 
 func (c *Config) InitDb() {
@@ -27,6 +37,14 @@ func (c *Config) InitDb() {
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbHost, dbPort, dbUser, dbPass, dbName)
 
 	c.DataSourceName = dsn
+
+	c.TokenConfig = TokenConfig{
+		ApplicationName: "stockbite",
+		JwtSignatureKey: "DWici392-sl93wcFD@",
+		JwtSigningMethod: jwt.SigningMethodHS256,
+		AccessTokenLifeTime: 20 * time.Minute,
+	}
+
 
 }
 
