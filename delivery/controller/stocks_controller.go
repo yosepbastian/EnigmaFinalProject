@@ -10,7 +10,7 @@ import (
 type StocksController struct {
 	stocks       usecase.StocksUseCase
 	transactions usecase.TransactionUseCase
-	sell usecase.OrderUseCase
+	BuysAndSell  usecase.OrderUseCase
 }
 
 func (pc *StocksController) GetAll(ctx *gin.Context) {
@@ -36,7 +36,7 @@ func (pc *StocksController) BuyStocks(ctx *gin.Context) {
 		return
 	}
 
-	err := pc.transactions.BuyStocks(request.UserID, request.Email, request.StockName, request.Quantity, request.Price)
+	err := pc.BuysAndSell.BuyStocks(request.UserID, request.Email, request.StockName, request.Quantity, request.Price)
 	if err != nil {
 		ctx.JSON(500, gin.H{
 			"message": err.Error(),
@@ -49,7 +49,6 @@ func (pc *StocksController) BuyStocks(ctx *gin.Context) {
 	})
 }
 
-
 func (oc *StocksController) CreateNewOrderSell(ctx *gin.Context) {
 	var newSell models.Transaction
 
@@ -60,8 +59,7 @@ func (oc *StocksController) CreateNewOrderSell(ctx *gin.Context) {
 		return
 	}
 
-
-	err := oc.sell.CreateNewOrderSell(newSell)
+	err := oc.BuysAndSell.SellStocks(newSell)
 	if err != nil {
 		ctx.JSON(500, gin.H{
 			"message": err.Error(),

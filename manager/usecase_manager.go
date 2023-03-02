@@ -17,9 +17,8 @@ func (u *usecaseManager) StocksUseCase() usecase.StocksUseCase {
 }
 
 func (u *usecaseManager) OrderUseCase() usecase.OrderUseCase {
-	return usecase.NewOrderUseCase(u.repomanager.OrderRepository())
+	return usecase.NewOrderUseCase(u.repomanager.PortfoliosRepository(), u.repomanager.StocksRepository(), u.repomanager.TransactionRepository(), u.repomanager.UsersRepository())
 }
-
 
 func (u *usecaseManager) BuyStocks() usecase.TransactionUseCase {
 	return usecase.NewTransactionUsecase(

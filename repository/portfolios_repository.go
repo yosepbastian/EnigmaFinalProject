@@ -12,8 +12,10 @@ type PortFoliosRepository interface {
 	Insert(porto *models.PortFolios) error
 	GetByIdandStockId(userID string, stockID int) (models.PortFolios, error)
 	Update(porto *models.PortFolios) error
+	Delete(userId string, stockId string) error
 	CheckAndCreate(userId string, stockId int, quantity float64) error
 	CheckQtyStock(userId string, stockId string) (int, error)
+	UpdatePortoStok(quantity int, userId string, stockId string) error
 }
 
 type portFoliosRepository struct {
@@ -29,6 +31,20 @@ func (p *portFoliosRepository) Insert(porto *models.PortFolios) error {
 	return nil
 }
 
+func (p *portFoliosRepository) GetByIdandStockId(userID string, stockID int) (models.PortFolios, error) {
+	var portfolio models.PortFolios
+	err := p.db.QueryRow(utils.GET_BY_USER_ID_AND_STOCK_ID, userID, stockID).Scan(
+		&portfolio.Id,
+		&portfolio.UserID,
+		&portfolio.StockID,
+		&portfolio.Quantity,
+	)
+	if err != nil {
+		return models.PortFolios{}, err
+	}
+	return portfolio, nil
+}
+
 func (r *portFoliosRepository) Update(porto *models.PortFolios) error {
 	_, err := r.db.NamedExec(utils.UPDATE_PORTFOLIOS, porto)
 	if err != nil {
@@ -37,7 +53,7 @@ func (r *portFoliosRepository) Update(porto *models.PortFolios) error {
 	return nil
 }
 
-func (s *orderRepository) Delete(userId string, stockId string) error {
+func (s *portFoliosRepository) Delete(userId string, stockId string) error {
 
 	_, err := s.db.Exec(utils.DELETE_STOCK_USER, userId, stockId)
 
@@ -73,20 +89,6 @@ func (t *portFoliosRepository) CheckAndCreate(userId string, stockId int, quanti
 	return nil
 }
 
-func (p *portFoliosRepository) GetByIdandStockId(userID string, stockID int) (models.PortFolios, error) {
-	var portfolio models.PortFolios
-	err := p.db.QueryRow(utils.GET_BY_USER_ID_AND_STOCK_ID, userID, stockID).Scan(
-		&portfolio.Id,
-		&portfolio.UserID,
-		&portfolio.StockID,
-		&portfolio.Quantity,
-	)
-	if err != nil {
-		return models.PortFolios{}, err
-	}
-	return portfolio, nil
-}
-
 func (s *portFoliosRepository) CheckQtyStock(userId string, stockId string) (int, error) {
 	var quantity int
 	err := s.db.Get(&quantity, utils.SELECT_QUANTITY_STOCK_USER, userId, stockId)
@@ -94,6 +96,16 @@ func (s *portFoliosRepository) CheckQtyStock(userId string, stockId string) (int
 		return 0, err
 	}
 	return quantity, nil
+}
+
+func (s *portFoliosRepository) UpdatePortoStok(quantity int, userId string, stockId string) error {
+	_, err := s.db.Exec(utils.UPDATE_QUANTITY_STOCK_USER, quantity, userId, stockId)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func NewPortFoliosRepository(db *sqlx.DB) PortFoliosRepository {
