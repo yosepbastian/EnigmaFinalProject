@@ -12,8 +12,8 @@ import (
 
 type OrderUseCase interface {
 	// CreateNewOrderBuy(newBuy models.Stocks) error
-	SellStocks(newSell models.Transaction) error
-	BuyStocks(userId string, email string, stockName string, quantity float64, price float64) error
+	OrderSell(newSell models.Transaction) error
+	OrderBuy(userId string, email string, stockName string, quantity float64, price float64) error
 }
 
 type orderUseCase struct {
@@ -23,7 +23,7 @@ type orderUseCase struct {
 	userRepo  repository.UsersRepository
 }
 
-func (s *orderUseCase) SellStocks(newSell models.Transaction) error {
+func (s *orderUseCase) OrderSell(newSell models.Transaction) error {
 	uuid := uuid.New().String()
 	fmt.Println("uuid", uuid)
 
@@ -91,7 +91,7 @@ func (s *orderUseCase) SellStocks(newSell models.Transaction) error {
 	return nil
 }
 
-func (t *orderUseCase) BuyStocks(userId string, email string, stockName string, quantity float64, price float64) error {
+func (t *orderUseCase) OrderBuy(userId string, email string, stockName string, quantity float64, price float64) error {
 	user, err := t.userRepo.GetByEmail(email)
 	if err != nil {
 		return fmt.Errorf("email not registered")

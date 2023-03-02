@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"kel1-stockbite-projects/models"
 	"kel1-stockbite-projects/repository"
+
+	"github.com/google/uuid"
 )
 
 type UsersUseCase interface {
@@ -21,6 +23,9 @@ type usersUseCase struct {
 }
 
 func (u *usersUseCase) RegisterUser(newUser *models.Users) error {
+	uuid := uuid.New().String()
+	newUser.Id = uuid
+
 	return u.usersRepo.Insert(newUser)
 }
 func (u *usersUseCase) UpdateUser(user *models.Users) error {
