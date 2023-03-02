@@ -115,7 +115,7 @@ func (t *orderUseCase) BuyStocks(userId string, email string, stockName string, 
 	floatQty := float64(quantity)
 
 	if stock.Quantity < floatQty {
-		return fmt.Errorf("Stock Quantity Not enough")
+		return fmt.Errorf("stock quantity not enough")
 	}
 	user.Balance = user.Balance - totalCost
 	stock.Quantity = stock.Quantity - floatQty
