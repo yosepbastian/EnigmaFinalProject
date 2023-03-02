@@ -11,6 +11,7 @@ const (
 	//stocks
 	SELECT_STOCKS_BY_NAME = `SELECT * FROM stocks WHERE name=$1`
 	UPDATE_STOCKS         = `UPDATE stocks SET quantity=:quantity where name= :name`
+	GetAll                = `SELECT * FROM stocks`
 
 	//portfolios
 	INSERT_PORTFOLIOS           = `INSERT INTO portfolios (id, user_id, stock_id, quantity) VALUES (:id, :userid, :stockid, :quantity)`

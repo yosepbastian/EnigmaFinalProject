@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
 	"kel1-stockbite-projects/models"
 	"kel1-stockbite-projects/utils"
 
@@ -14,12 +13,32 @@ type UsersRepository interface {
 	GetById(id string) (models.Users, error)
 	Update(id *models.Users) error
 	GetByEmail(email string) (models.Users, error)
-	Begin() (tx *sql.Tx, err error)
 	GetByEmailForUpdate(email string, tx *sql.Tx) (*models.Users, error)
+	GetUserBalance(userId string) (float64, error)
+	UpdateUserBalance(balance int, userId string) error
 }
 
 type usersRepository struct {
 	db *sqlx.DB
+}
+
+func (s *usersRepository) GetUserBalance(userId string) (float64, error) {
+	var balance float64
+	err := s.db.Get(&balance, utils.GET_USER_BALANCE, userId)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return balance, nil
+}
+
+func (s *usersRepository) UpdateUserBalance(balance int, userId string) error {
+	_, err := s.db.Exec(utils.UPDATE_USER_BALANCE, balance, userId)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (u *usersRepository) Insert(newUser *models.Users) error {
@@ -29,13 +48,7 @@ func (u *usersRepository) Insert(newUser *models.Users) error {
 	}
 	return nil
 }
-func (t *usersRepository) Begin() (tx *sql.Tx, err error) {
-	tx, err = t.db.Begin()
-	if err != nil {
-		return nil, fmt.Errorf("failed to begin transaction: %v", err)
-	}
-	return tx, nil
-}
+
 
 func (u *usersRepository) GetByEmail(email string) (models.Users, error) {
 	var users models.Users

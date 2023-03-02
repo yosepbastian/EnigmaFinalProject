@@ -10,7 +10,9 @@ import (
 type StocksRepository interface {
 	GetByName(name string) (models.Stocks, error)
 	Update(stocks *models.Stocks) error
-	
+	GetAll() ([]models.Stocks, error)
+	GetStockQty(stockId string) (int, error)
+	UpdateQtyStock(quantity int, id string) error
 }
 
 type stocksRepository struct {
@@ -31,11 +33,39 @@ func (s *stocksRepository) GetByName(name string) (models.Stocks, error) {
 	return stocks, nil
 }
 
+func (s *stocksRepository) GetStockQty(stockId string) (int, error) {
+	var quantity int
+	err := s.db.Get(&quantity, utils.GET_STOCK_QUANTITY_BY_ID, stockId)
+	if err != nil {
+		return 0, err
+	}
+	return quantity, nil
+
+}
+
 func (s *stocksRepository) Update(stocks *models.Stocks) error {
 	_, err := s.db.NamedExec(utils.UPDATE_STOCKS, stocks)
 	if err != nil {
 		return err
 	}
+	return nil
+}
+func (s *stocksRepository) GetAll() ([]models.Stocks, error) {
+	var stocks []models.Stocks
+	err := s.db.Select(&stocks, utils.GetAll)
+	if err != nil {
+		return nil, err
+	}
+	return stocks, nil
+}
+
+func (s *stocksRepository) UpdateQtyStock(quantity int, id string) error {
+	_, err := s.db.Exec(utils.UPDATE_QUANTITY_STOCK, quantity, id)
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
