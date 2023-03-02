@@ -130,7 +130,7 @@ func (s *orderRepository) UpdateStockUser(quantity int, userId string, stockId s
 
 func (s *orderRepository) AddNewTransaction(transaction models.Transaction) error {
 
-	_, err := s.db.Exec(utils.INSERT_NEW_TRANSACTION, transaction.UserID, transaction.StockID, transaction.Quantity, transaction.Price, transaction.TransactionType)
+	_, err := s.db.Exec(utils.INSERT_NEW_TRANSACTION, transaction.UserID, transaction.StockID, transaction.Quantity, transaction.Price, transaction.TransactionType, transaction.Id)
 
 	if err != nil {
 		return err
