@@ -3,13 +3,11 @@ package controller
 import (
 	"kel1-stockbite-projects/middleware"
 	"kel1-stockbite-projects/models"
+	"kel1-stockbite-projects/token"
 	"kel1-stockbite-projects/usecase"
 	"net/http"
-	"os"
-	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
 )
 
 type UserController struct {
@@ -51,21 +49,14 @@ func (oc *UserController) Login(ctx *gin.Context) {
 		"message": "Succes Login",
 	})
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": user.Email,
-		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
-	})
-	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
-
+	token, err := token.GenerateToken(user.Email, user.Password)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid to create token",
-		})
+		ctx.AbortWithStatus(401)
 	}
-
-	ctx.JSON(http.StatusOK, gin.H{
-		"token": tokenString,
+	ctx.JSON(200, gin.H{
+		"token": token,
 	})
+
 }
 
 func Validate(ctx *gin.Context) {

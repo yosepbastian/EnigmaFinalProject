@@ -1,8 +1,8 @@
-package jwt
+package token
 
 import (
 	"fmt"
-	"net/http"
+
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -28,41 +28,31 @@ type Credential struct {
 	Password string `json:"userPassword"`
 }
 
-func main() {
-	r := gin.Default()
-	r.Use(AuthTokenMiddleware())
-	publicRoute := r.Group("/enigma")
-	publicRoute.POST("/auth", func(c *gin.Context) {
-		var user Credential
-		if err := c.BindJSON(&user); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "can't bind struct",
-			})
-			return
-		}
-		if user.Username == "enigma" && user.Password == "123" {
-			token, err := GenerateToken(user.Username, "user@corp.com")
-			if err != nil {
-				c.AbortWithStatus(401)
-			}
-			c.JSON(200, gin.H{
-				"token": token,
-			})
-		} else {
-			c.AbortWithStatus(401)
-		}
+// func main() {
+// 	r := gin.Default()
+// 	r.Use(AuthTokenMiddleware())
+// 	publicRoute := r.Group("/enigma")
+// 	publicRoute.POST("/auth", func(c *gin.Context) {
+// 		var user Credential
+// 		if err := c.BindJSON(&user); err != nil {
+// 			c.JSON(http.StatusBadRequest, gin.H{
+// 				"message": "can't bind struct",
+// 			})
+// 			return
+// 		})
 
-	})
-	publicRoute.GET("/user", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "user",
-		})
-	})
-	err := r.Run("localhost:8888")
-	if err != nil {
-		panic(err)
-	}
-}
+// 	publicRoute.GET("/user", func(c *gin.Context) {
+// 		c.JSON(200, gin.H{
+// 			"message": "user",
+// 		})
+// 	})
+// 	err := r.Run("localhost:8888")
+// 	if err != nil {
+// 		panic(err)
+// 	}
+
+// }
+
 func AuthTokenMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.Request.URL.Path == "/enigma/auth" {
@@ -108,7 +98,7 @@ func AuthTokenMiddleware() gin.HandlerFunc {
 }
 
 func ParseToken(tokenString string) (jwt.MapClaims, error) {
-	token, err := jwt.Parse(tokenString, func(token *) (interface{}, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if method, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Signing method invalid")
 		} else if method != JwtSigningMethod {
