@@ -7,3 +7,8 @@ type Users struct {
 	Password string  `json:"password" binding:"required"`
 	Balance  float64 `json:"balance"`
 }
+
+type UsersLogin struct {
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}

@@ -16,6 +16,7 @@ type UsersRepository interface {
 	GetByEmailForUpdate(email string, tx *sql.Tx) (*models.Users, error)
 	GetUserBalance(userId string) (float64, error)
 	UpdateUserBalance(balance int, userId string) error
+
 }
 
 type usersRepository struct {
@@ -100,6 +101,7 @@ func (u *usersRepository) GetByEmailForUpdate(email string, tx *sql.Tx) (*models
 
 	return user, nil
 }
+
 
 func NewUsersRepository(db *sqlx.DB) UsersRepository {
 	return &usersRepository{
