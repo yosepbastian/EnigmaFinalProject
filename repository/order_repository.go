@@ -10,7 +10,7 @@ import (
 
 type OrderRepository interface {
 	GetByName(name string) (models.Stocks, error)
-	CheckQuantityStockUser(userId string, stockId string) (int, error)
+	
 	DeleteStockUser(userId string, stockId string) error
 	UpdateUserBalance(balance int, userId string) error
 	UpdateQuantityStock(quantity int, id string) error
@@ -75,28 +75,8 @@ func (s *orderRepository) GetUserBalance(userId string) (float64, error) {
 	return balance, nil
 }
 
-func (s *orderRepository) CheckQuantityStockUser(userId string, stockId string) (int, error) {
-	var quantity int
 
-	err := s.db.Get(&quantity, utils.SELECT_QUANTITY_STOCK_USER, userId, stockId)
 
-	if err != nil {
-		return 0, err
-	}
-
-	return quantity, nil
-}
-
-func (s *orderRepository) DeleteStockUser(userId string, stockId string) error {
-
-	_, err := s.db.Exec(utils.DELETE_STOCK_USER, userId, stockId)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
 
 func (s *orderRepository) UpdateUserBalance(balance int, userId string) error {
 	_, err := s.db.Exec(utils.UPDATE_USER_BALANCE, balance, userId)

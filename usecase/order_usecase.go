@@ -16,6 +16,7 @@ type OrderUseCase interface {
 
 type orderUseCase struct {
 	orderRepo repository.OrderRepository
+	portRepo repository.PortFoliosRepository
 }
 
 func (s *orderUseCase) CreateNewOrderSell(newSell models.Transaction) error {
@@ -24,7 +25,7 @@ func (s *orderUseCase) CreateNewOrderSell(newSell models.Transaction) error {
 
 	stockId := strconv.Itoa(newSell.StockID)
 
-	stockAvailable, isStockAvailable := s.orderRepo.CheckQuantityStockUser(newSell.UserID, stockId)
+	stockAvailable, isStockAvailable := s.portRepo.CheckQtyStock(newSell.UserID, stockId)
 
 	currentQuantity := stockAvailable - int (newSell.Quantity)
 	fmt.Println("error", stockAvailable)
