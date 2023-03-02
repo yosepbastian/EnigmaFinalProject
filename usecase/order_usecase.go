@@ -6,6 +6,8 @@ import (
 	"kel1-stockbite-projects/models"
 	"kel1-stockbite-projects/repository"
 	"strconv"
+
+	"github.com/google/uuid"
 )
 
 type OrderUseCase interface {
@@ -20,27 +22,40 @@ type orderUseCase struct {
 
 func (s *orderUseCase) CreateNewOrderSell(newSell models.Transaction) error {
 
+	uuid := uuid.New().String()
+
+	fmt.Println("uuid", uuid)
+
+	TxnewSell := models.Transaction{
+		Id:              uuid,
+		UserID:          newSell.UserID,
+		StockID:         newSell.StockID,
+		Quantity:        newSell.Quantity,
+		Price:           newSell.Price,
+		TransactionType: "SELL",
+	}
+
+
 	var tempProvit float64
 
 	stockId := strconv.Itoa(newSell.StockID)
 
 	stockAvailable, isStockAvailable := s.orderRepo.CheckQuantityStockUser(newSell.UserID, stockId)
 
-	currentQuantity := stockAvailable - int (newSell.Quantity)
-	fmt.Println("error", stockAvailable)
+	currentQuantity := stockAvailable - int(newSell.Quantity)
 
 
 	if isStockAvailable != nil {
 
 		return errors.New("you don't have this stock")
 
-	} else if stockAvailable < int (newSell.Quantity ){
+	} else if stockAvailable < int(newSell.Quantity) {
 
 		return errors.New("your new order sell is geater than your available stocks")
 
 	} else if newSell.Quantity < 1 {
 		return errors.New("minimal quantity is 1")
-	} else if int (newSell.Quantity) >  stockAvailable {
+	} else if int(newSell.Quantity) > stockAvailable {
 		return errors.New("maximum order sell is equal or less then your stocks")
 	} else {
 		tempProvit = (newSell.Price * 100) * float64(newSell.Quantity)
@@ -54,10 +69,7 @@ func (s *orderUseCase) CreateNewOrderSell(newSell models.Transaction) error {
 		s.orderRepo.UpdateStockUser(currentQuantity, newSell.UserID, stockId)
 	}
 
-
 	balance, err := s.orderRepo.GetUserBalance(newSell.UserID)
-
-
 
 	if err != nil {
 
@@ -70,13 +82,12 @@ func (s *orderUseCase) CreateNewOrderSell(newSell models.Transaction) error {
 	}
 
 	stockQuantity, Qerr := s.orderRepo.GetStockQuantityByID(stockId)
-	
 
 	if Qerr != nil {
 		return errors.New("error has occurred when trying to get stock quantity")
 	} else {
 
-		newStockQuantity := stockQuantity + int ( (newSell.Quantity * 100))
+		newStockQuantity := stockQuantity + int((newSell.Quantity * 100))
 		err := s.orderRepo.UpdateQuantityStock(newStockQuantity, stockId)
 
 		if err != nil {
@@ -84,10 +95,9 @@ func (s *orderUseCase) CreateNewOrderSell(newSell models.Transaction) error {
 		}
 	}
 
-	Terr := s.orderRepo.AddNewTransaction(newSell)
+	fmt.Println("newsell tx", TxnewSell)
 
-	fmt.Println(Terr)
-
+	Terr := s.orderRepo.AddNewTransaction(TxnewSell)
 
 	if Terr != nil {
 		return errors.New("error has occurred when trying to add new transaction")
