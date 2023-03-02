@@ -5,7 +5,7 @@ import "kel1-stockbite-projects/usecase"
 type UseCaseManager interface {
 	StocksUseCase() usecase.StocksUseCase
 	OrderUseCase() usecase.OrderUseCase
-	UserUseCase() usecase.UsersUseCase
+	
 }
 
 type usecaseManager struct {
