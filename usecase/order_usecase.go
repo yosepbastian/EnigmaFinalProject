@@ -94,16 +94,16 @@ func (s *orderUseCase) SellStocks(newSell models.Transaction) error {
 func (t *orderUseCase) BuyStocks(userId string, email string, stockName string, quantity float64, price float64) error {
 	user, err := t.userRepo.GetByEmail(email)
 	if err != nil {
-		return fmt.Errorf("Email not registered")
+		return fmt.Errorf("email not registered")
 	}
 	//check stockname
 	stock, err := t.stockRepo.GetByName(stockName)
 	if err != nil {
-		return fmt.Errorf("Incorrect StockName")
+		return fmt.Errorf("incorrect stockName")
 	}
 	//check price equal to stockprice
 	if price != stock.Price {
-		return fmt.Errorf("Incorrect Stock Price")
+		return fmt.Errorf("incorrect stock price")
 	}
 
 	totalCost := (price * 100) * quantity
