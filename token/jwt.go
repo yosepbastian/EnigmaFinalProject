@@ -24,38 +24,13 @@ type authHeader struct {
 }
 
 type Credential struct {
-	Email    string `json:"email"`
-	Password string `json:"userPassword"`
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"userPassword" binding:"required"`
 }
-
-// func main() {
-// 	r := gin.Default()
-// 	r.Use(AuthTokenMiddleware())
-// 	publicRoute := r.Group("/enigma")
-// 	publicRoute.POST("/auth", func(c *gin.Context) {
-// 		var user Credential
-// 		if err := c.BindJSON(&user); err != nil {
-// 			c.JSON(http.StatusBadRequest, gin.H{
-// 				"message": "can't bind struct",
-// 			})
-// 			return
-// 		})
-
-// 	publicRoute.GET("/user", func(c *gin.Context) {
-// 		c.JSON(200, gin.H{
-// 			"message": "user",
-// 		})
-// 	})
-// 	err := r.Run("localhost:8888")
-// 	if err != nil {
-// 		panic(err)
-// 	}
-
-// }
 
 func AuthTokenMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if c.Request.URL.Path == "/enigma/auth" {
+		if c.Request.URL.Path == "users/login" {
 			c.Next()
 		} else {
 			h := authHeader{}

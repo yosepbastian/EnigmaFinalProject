@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"kel1-stockbite-projects/middleware"
 	"kel1-stockbite-projects/models"
 	"kel1-stockbite-projects/token"
 	"kel1-stockbite-projects/usecase"
@@ -71,6 +70,6 @@ func NewUserController(router *gin.Engine, userUc usecase.UsersUseCase) *UserCon
 	}
 	router.GET("users/validate", Validate)
 	router.POST("users/signup", newUserController.SignUp)
-	router.POST("users/login", middleware.RequireAuth, newUserController.Login)
+	router.POST("users/login", newUserController.Login)
 	return &newUserController
 }
