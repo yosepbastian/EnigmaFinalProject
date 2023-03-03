@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"kel1-stockbite-projects/config"
 	"kel1-stockbite-projects/models"
-	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -45,22 +44,22 @@ func (t accessToken) VerifyAccessToken(tokenString string) (jwt.MapClaims, error
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if method, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("signing method invalid")
-		} else if method != t.conf.JwtSigningMethod {
+		} else if method != t.conf.JwtSigningMethod { 
+			
 			return nil, fmt.Errorf("signing method invalid")
 		}
 
-		return []byte(t.conf.JwtSignatureKey), nil
+		return t.conf.JwtSignatureKey, nil
 	})
-
-	claims, ok := token.Claims.(jwt.MapClaims)
-
-	if !ok || !token.Valid || claims["iss"] != t.conf.ApplicationName {
-		log.Println("Token nvalid")
-
+	if err != nil {
 		return nil, err
 	}
 
-	return claims, nil
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		return nil, err
+	}
+	return claims,nil
 
 }
 

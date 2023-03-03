@@ -1,7 +1,9 @@
 package middleware
 
 import (
+	"fmt"
 	"kel1-stockbite-projects/utils/authenticator"
+
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -10,8 +12,6 @@ import (
 type authHeader struct {
 	AuthorizationHeader string `header:"Authorization"`
 }
-
-
 
 type AuthTokenMiddleWare interface {
 	RequireToken() gin.HandlerFunc
@@ -27,7 +27,8 @@ func NewTokenValidator(acctToken authenticator.AccessToken) AuthTokenMiddleWare 
 	}
 }
 
-func (a *authTokenMiddleWare) RequireToken() gin.HandlerFunc {
+func (a authTokenMiddleWare) RequireToken() gin.HandlerFunc {
+
 	return func(ctx *gin.Context) {
 		h := authHeader{}
 
@@ -46,8 +47,9 @@ func (a *authTokenMiddleWare) RequireToken() gin.HandlerFunc {
 			})
 			ctx.Abort()
 			return
-
 		}
+
+
 
 		token, err := a.acctToken.VerifyAccessToken(tokenString)
 		if err != nil {
@@ -57,6 +59,7 @@ func (a *authTokenMiddleWare) RequireToken() gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
+		fmt.Println(token)
 		if token != nil {
 			ctx.Next()
 		} else {
@@ -65,11 +68,6 @@ func (a *authTokenMiddleWare) RequireToken() gin.HandlerFunc {
 			})
 			ctx.Abort()
 			return
-
 		}
-
 	}
-
 }
-
-

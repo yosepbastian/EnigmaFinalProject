@@ -13,9 +13,9 @@ import (
 
 type appServer struct {
 	engine         *gin.Engine
-	authUseCase usecase.AuthUseCase
+	authUseCase    usecase.AuthUseCase
 	useCaseManager manager.UseCaseManager
-	tokenService authenticator.AccessToken
+	tokenService   authenticator.AccessToken
 }
 
 func Server() *appServer {
@@ -30,14 +30,14 @@ func Server() *appServer {
 	return &appServer{
 		engine:         ginEngine,
 		useCaseManager: use_case,
-		authUseCase: authUserCase,
+		authUseCase:    authUserCase,
 	}
 }
 
 func (a *appServer) initHandlers() {
-	publicRoute := a.engine.Group("/stocks")
+	publicRoute := a.engine.Group("/login")
 	tokenMdw := middleware.NewTokenValidator(a.tokenService)
-	controller.NewStocksController(publicRoute, a.useCaseManager.StocksUseCase(), a.useCaseManager.BuyStocks(), a.useCaseManager.OrderUseCase(), a.authUseCase, tokenMdw)
+	controller.NewStocksController(publicRoute, a.useCaseManager.StocksUseCase(), a.useCaseManager.OrderUseCase(), a.authUseCase, tokenMdw)
 
 }
 
