@@ -4,7 +4,6 @@ import (
 	"kel1-stockbite-projects/models"
 	"kel1-stockbite-projects/token"
 	"kel1-stockbite-projects/usecase"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -36,6 +35,20 @@ func (oc *UserController) SignUp(ctx *gin.Context) {
 }
 
 func (oc *UserController) Login(ctx *gin.Context) {
+	var user models.UserLogin
+	if err := ctx.ShouldBindJSON(&user); err != nil {
+		ctx.JSON(400, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(201, gin.H{
+		"message": "Register Succes",
+	})
+}
+
+func (oc *UserController) Login(ctx *gin.Context) {
 	var user models.UsersLogin
 	if err := ctx.ShouldBindJSON(&user); err != nil {
 		ctx.JSON(400, gin.H{
@@ -53,14 +66,7 @@ func (oc *UserController) Login(ctx *gin.Context) {
 		ctx.AbortWithStatus(401)
 	}
 	ctx.JSON(200, gin.H{
-		"token": token,
-	})
-
-}
-
-func Validate(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{
-		"Message": "Logged in",
+		"message": "OK",
 	})
 }
 
