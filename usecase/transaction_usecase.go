@@ -17,7 +17,7 @@ type transactionUseCase struct {
 }
 
 func (t *transactionUseCase) InsertNewTransaction(tx models.Transaction) error {
-	return t.txRepo.Insert(tx)
+	return t.txRepo.Insert(&tx)
 }
 
 func NewTransactionUsecase(txRepo repository.TransactionRepository, stocksRepo repository.StocksRepository, usersRepo repository.UsersRepository, portRepo repository.PortFoliosRepository) TransactionUseCase {

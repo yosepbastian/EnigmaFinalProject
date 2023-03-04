@@ -22,14 +22,14 @@ type orderUseCase struct {
 	userRepo  repository.UsersRepository
 }
 
-func (s *orderUseCase) OrderSell(newSell models.Transaction) error {
+func (s *orderUseCase) OrderSell(newSell *models.Transaction) error {
 
-	TxnewSell := models.Transaction{
+	TxnewSell := &models.Transaction{
 		Id:              utils.GenerateId(),
 		UserID:          newSell.UserID,
 		StockID:         newSell.StockID,
 		Quantity:        newSell.Quantity,
-		Price:           newSell.Price,
+		Price:           newSell.Price * 100,
 		TransactionType: "SELL",
 	}
 
@@ -133,7 +133,7 @@ func (t *orderUseCase) OrderBuy(userId string, email string, stockName string, q
 		TransactionType: "buy",
 	}
 
-	if err := t.txRepo.Insert(transaction); err != nil {
+	if err := t.txRepo.Insert(&transaction); err != nil {
 		fmt.Println(err)
 		return err
 	}

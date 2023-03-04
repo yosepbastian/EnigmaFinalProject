@@ -8,14 +8,14 @@ import (
 )
 
 type TransactionRepository interface {
-	Insert(tx models.Transaction) error
+	Insert(tx *models.Transaction) error
 }
 
 type transactionRepository struct {
 	db *sqlx.DB
 }
 
-func (t *transactionRepository) Insert(tx models.Transaction) error {
+func (t *transactionRepository) Insert(tx *models.Transaction) error {
 	_, err := t.db.NamedExec(utils.INSERT_TRANSACTION, tx)
 	if err != nil {
 		return err
