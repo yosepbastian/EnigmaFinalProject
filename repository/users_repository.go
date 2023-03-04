@@ -16,7 +16,7 @@ type UsersRepository interface {
 	GetByEmailForUpdate(email string, tx *sql.Tx) (*models.Users, error)
 	GetUserBalance(userId string) (float64, error)
 	UpdateUserBalance(balance int, userId string) error
-
+	GetByPassword(password string) (models.Users, error)
 }
 
 type usersRepository struct {
@@ -50,10 +50,23 @@ func (u *usersRepository) Insert(newUser *models.Users) error {
 	return nil
 }
 
-
 func (u *usersRepository) GetByEmail(email string) (models.Users, error) {
 	var users models.Users
 	err := u.db.QueryRow(utils.SELECT_USER_BY_EMAIL, email).Scan(
+		&users.Id,
+		&users.Name,
+		&users.Email,
+		&users.Password,
+		&users.Balance,
+	)
+	if err != nil {
+		return models.Users{}, err
+	}
+	return users, nil
+}
+func (u *usersRepository) GetByPassword(password string) (models.Users, error) {
+	var users models.Users
+	err := u.db.QueryRow(utils.SELECT_USER_BY_PASSWORD, password).Scan(
 		&users.Id,
 		&users.Name,
 		&users.Email,
@@ -101,7 +114,6 @@ func (u *usersRepository) GetByEmailForUpdate(email string, tx *sql.Tx) (*models
 
 	return user, nil
 }
-
 
 func NewUsersRepository(db *sqlx.DB) UsersRepository {
 	return &usersRepository{
