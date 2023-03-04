@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"kel1-stockbite-projects/config"
 	"kel1-stockbite-projects/models"
+	"time"
 
 	"github.com/golang-jwt/jwt"
 )
@@ -11,16 +12,19 @@ import (
 type AccessToken interface {
 	CreateAccessToken(cred *models.UserLogin) (string, error)
 }
-
+type accessToken struct {
+	conf config.TokenConfig
+}
 var JwtSigningMethod = jwt.SigningMethodHS256
 var JwtSignatureKey = []byte("DWici392-sl93wcFD@")
 var ApplicationName = "stockbite"
 
-type accessToken struct {
-	conf config.TokenConfig
-}
+
 
 func (t *accessToken) CreateAccessToken(cred *models.UserLogin) (string, error) {
+	now := time.Now().UTC()
+	end := now.Add(t.conf.AccessTokenLifeTime)
+
 	claims := JwtClaims{
 		StandardClaims: jwt.StandardClaims{
 			Issuer: ApplicationName,
@@ -29,6 +33,8 @@ func (t *accessToken) CreateAccessToken(cred *models.UserLogin) (string, error) 
 		Email:    cred.Email,
 		Password: cred.Password,
 	}
+	claims.IssuedAt = now.Unix()
+	claims.ExpiresAt = end.Unix()
 	token := jwt.NewWithClaims(
 		JwtSigningMethod,
 		claims,
@@ -37,11 +43,12 @@ func (t *accessToken) CreateAccessToken(cred *models.UserLogin) (string, error) 
 }
 
 func VerifyAccessToken(tokenString string) (jwt.MapClaims, error) {
+
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if method, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Signing method invalid")
+			return nil, fmt.Errorf("signing method invalid")
 		} else if method != JwtSigningMethod {
-			return nil, fmt.Errorf("Signing method invalid")
+			return nil, fmt.Errorf("signing method invalid")
 		}
 
 		return JwtSignatureKey, nil
