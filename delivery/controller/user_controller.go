@@ -1,15 +1,10 @@
 package controller
 
 import (
-	"kel1-stockbite-projects/middleware"
 	"kel1-stockbite-projects/models"
 	"kel1-stockbite-projects/usecase"
-	"net/http"
-	"os"
-	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
 )
 
 type UserController struct {
@@ -51,35 +46,13 @@ func (oc *UserController) Login(ctx *gin.Context) {
 		"message": "Succes Login",
 	})
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": user.Email,
-		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
-	})
-	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
-
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid to create token",
-		})
-	}
-
-	ctx.JSON(http.StatusOK, gin.H{
-		"token": tokenString,
-	})
-}
-
-func Validate(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{
-		"Message": "Logged in",
-	})
 }
 
 func NewUserController(router *gin.Engine, userUc usecase.UsersUseCase) *UserController {
 	newUserController := UserController{
 		userUc,
 	}
-	router.GET("users/validate", Validate)
 	router.POST("users/signup", newUserController.SignUp)
-	router.POST("users/login", middleware.RequireAuth, newUserController.Login)
+	router.POST("users/login", newUserController.Login)
 	return &newUserController
 }

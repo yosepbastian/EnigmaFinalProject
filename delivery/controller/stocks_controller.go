@@ -11,10 +11,9 @@ import (
 type StocksController struct {
 	rg *gin.RouterGroup
 
-	stocks       usecase.StocksUseCase
-	transactions usecase.TransactionUseCase
-	sell         usecase.OrderUseCase
-	authUseCase  usecase.AuthUseCase
+	stocks      usecase.StocksUseCase
+	sellAndBuy  usecase.OrderUseCase
+	authUseCase usecase.AuthUseCase
 }
 
 func (pc *StocksController) GetAll(ctx *gin.Context) {
@@ -40,7 +39,7 @@ func (pc *StocksController) BuyStocks(ctx *gin.Context) {
 		return
 	}
 
-	err := pc.transactions.BuyStocks(request.UserID, request.Email, request.StockName, request.Quantity, request.Price)
+	err := pc.sellAndBuy.OrderBuy(request.UserID, request.Email, request.StockName, request.Quantity, request.Price)
 	if err != nil {
 		ctx.JSON(500, gin.H{
 			"message": err.Error(),
@@ -55,7 +54,6 @@ func (pc *StocksController) BuyStocks(ctx *gin.Context) {
 
 func (oc *StocksController) UserAuth(ctx *gin.Context) {
 	var userLogin models.UserLogin
-
 
 	if err := ctx.ShouldBindJSON(&userLogin); err != nil {
 		ctx.JSON(400, gin.H{
@@ -110,7 +108,7 @@ func (oc *StocksController) CreateNewOrderSell(ctx *gin.Context) {
 		return
 	}
 
-	err := oc.sell.CreateNewOrderSell(newSell)
+	err := oc.sellAndBuy.OrderSell(newSell)
 	if err != nil {
 		ctx.JSON(500, gin.H{
 			"message": err.Error(),
@@ -123,17 +121,16 @@ func (oc *StocksController) CreateNewOrderSell(ctx *gin.Context) {
 	})
 }
 
-func NewStocksController(routerGroup *gin.RouterGroup, stocksUc usecase.StocksUseCase, transactionsUc usecase.TransactionUseCase, orderUc usecase.OrderUseCase, authUseCase usecase.AuthUseCase, tokenMdw middleware.AuthTokenMiddleWare) *StocksController {
+func NewStocksController(routerGroup *gin.RouterGroup, stocksUc usecase.StocksUseCase, orderUc usecase.OrderUseCase, authUseCase usecase.AuthUseCase, tokenMdw middleware.AuthTokenMiddleWare) *StocksController {
 	newStocksController := StocksController{
-		rg:           routerGroup,
-		stocks:       stocksUc,
-		transactions: transactionsUc,
-		sell:         orderUc,
-		authUseCase:  authUseCase,
+		rg:          routerGroup,
+		stocks:      stocksUc,
+		sellAndBuy:  orderUc,
+		authUseCase: authUseCase,
 	}
 	newStocksController.rg.POST("/auth", newStocksController.UserAuth)
 	protectedGroup := newStocksController.rg.Group("/order", tokenMdw.RequireToken())
-	protectedGroup.GET("/name", newStocksController.GetById)
+	protectedGroup.GET("/stocks", newStocksController.GetAll)
 	protectedGroup.POST("/buy", newStocksController.BuyStocks)
 	protectedGroup.POST("/sell", newStocksController.CreateNewOrderSell)
 	return &newStocksController

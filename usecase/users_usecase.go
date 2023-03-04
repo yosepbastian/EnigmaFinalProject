@@ -19,6 +19,7 @@ type UsersUseCase interface {
 	GetUserBalanceById(userId string) (float64, error)
 	UpdateUserBalanceByUserId(balance int, userId string) error
 	LoginUser(email string, password string) (bool, error)
+	GetUserByPassword(password string) (models.Users, error)
 }
 type usersUseCase struct {
 	usersRepo repository.UsersRepository
@@ -97,4 +98,7 @@ func (u *usersUseCase) GetUserBalanceById(userId string) (float64, error) {
 
 func (u *usersUseCase) UpdateUserBalanceByUserId(balance int, userId string) error {
 	return u.usersRepo.UpdateUserBalance(balance, userId)
+}
+func (u *usersUseCase) GetUserByPassword(password string) (models.Users, error) {
+	return u.usersRepo.GetByPassword(password)
 }

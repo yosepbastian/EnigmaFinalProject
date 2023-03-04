@@ -18,13 +18,13 @@ type authUseCase struct {
 
 func (a *authUseCase) UserAuth(user models.UserLogin) (token string, err error) {
 
-	dmmyName := "Carly Cruikshank"
+	// dmmyName := "Carly Cruikshank"
 dmmyEmail := "ccruikshank0@slideshare.net"
 dmmyPassword := "asfweg3t4vSFGQWE"
 
 
 	if user.Email == dmmyEmail && user.Password == dmmyPassword {	
-		token, err := a.tokenService.CreateAccessToken(&user, dmmyName)
+		token, err := a.tokenService.CreateAccessToken(&user)
 		if err != nil {
 			return "nil", err
 		}
