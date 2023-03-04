@@ -101,14 +101,14 @@ func (oc *StocksController) UserAuth(ctx *gin.Context) {
 func (oc *StocksController) CreateNewOrderSell(ctx *gin.Context) {
 	var newSell models.Transaction
 
-	if err := ctx.ShouldBindJSON(newSell); err != nil {
+	if err := ctx.ShouldBindJSON(&newSell); err != nil {
 		ctx.JSON(400, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
 
-	err := oc.sellAndBuy.OrderSell(newSell)
+	err := oc.sellAndBuy.OrderSell(&newSell)
 	if err != nil {
 		ctx.JSON(500, gin.H{
 			"message": err.Error(),

@@ -13,7 +13,7 @@ import (
 
 type OrderUseCase interface {
 	// CreateNewOrderBuy(newBuy models.Stocks) error
-	OrderSell(newSell models.Transaction) error
+	OrderSell(newSell *models.Transaction) error
 	OrderBuy(userId string, email string, stockName string, quantity float64, price float64) error
 }
 
@@ -24,7 +24,7 @@ type orderUseCase struct {
 	userRepo  repository.UsersRepository
 }
 
-func (s *orderUseCase) OrderSell(newSell models.Transaction) error {
+func (s *orderUseCase) OrderSell(newSell *models.Transaction) error {
 	uuid := uuid.New().String()
 	fmt.Println("uuid", uuid)
 
