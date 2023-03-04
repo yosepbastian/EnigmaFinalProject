@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"kel1-stockbite-projects/models"
 	"kel1-stockbite-projects/repository"
+	"kel1-stockbite-projects/utils"
 	"strconv"
-
-	"github.com/google/uuid"
-
 )
 
 type OrderUseCase interface {
@@ -24,12 +22,10 @@ type orderUseCase struct {
 	userRepo  repository.UsersRepository
 }
 
-func (s *orderUseCase) OrderSell(newSell *models.Transaction) error {
-	uuid := uuid.New().String()
-	fmt.Println("uuid", uuid)
+func (s *orderUseCase) OrderSell(newSell models.Transaction) error {
 
 	TxnewSell := models.Transaction{
-		Id:              uuid,
+		Id:              utils.GenerateId(),
 		UserID:          newSell.UserID,
 		StockID:         newSell.StockID,
 		Quantity:        newSell.Quantity,
@@ -127,9 +123,9 @@ func (t *orderUseCase) OrderBuy(userId string, email string, stockName string, q
 	if err := t.stockRepo.Update(&stock); err != nil {
 		return err
 	}
-	uuid := uuid.New().String()
+
 	transaction := models.Transaction{
-		Id:              uuid,
+		Id:              utils.GenerateId(),
 		UserID:          userId,
 		StockID:         stock.Id,
 		Quantity:        quantity,

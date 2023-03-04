@@ -5,9 +5,8 @@ import (
 	"errors"
 	"kel1-stockbite-projects/models"
 	"kel1-stockbite-projects/repository"
+	"kel1-stockbite-projects/utils"
 	"strings"
-
-	"github.com/google/uuid"
 )
 
 type UsersUseCase interface {
@@ -32,8 +31,8 @@ func NewUsersUseCase(uRepo repository.UsersRepository) UsersUseCase {
 }
 
 func (u *usersUseCase) RegisterUser(newUser *models.Users) error {
-	uuid := uuid.New().String()
-	newUser.Id = uuid
+
+	newUser.Id = utils.GenerateId()
 
 	if newUser.Email == "" || !strings.Contains(newUser.Email, "@") {
 		return errors.New("invalid email")
