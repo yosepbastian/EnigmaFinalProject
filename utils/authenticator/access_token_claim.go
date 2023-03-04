@@ -2,8 +2,8 @@ package authenticator
 
 import "github.com/golang-jwt/jwt"
 
-type JwtClaims struct{
+type JwtClaims struct {
 	jwt.StandardClaims
-	Name string `json:"name"`
-	Email string `json:"email"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
