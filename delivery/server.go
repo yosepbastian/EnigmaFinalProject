@@ -25,7 +25,7 @@ func Server() *appServer {
 	repo := manager.NewRepositoryManager(infra)
 	tokenService := authenticator.NewAccessToken(config.TokenConfig)
 	use_case := manager.NewUseCaseManager(repo)
-	authUserCase := usecase.NewAuthUseCase(tokenService)
+	authUserCase := usecase.NewAuthUseCase(tokenService, repo.UsersRepository())
 
 	return &appServer{
 		engine:         ginEngine,

@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"kel1-stockbite-projects/models"
+	"kel1-stockbite-projects/repository"
 	"kel1-stockbite-projects/utils/authenticator"
 )
 
@@ -14,17 +15,27 @@ type AuthUseCase interface{
 }
 type authUseCase struct {
 	tokenService authenticator.AccessToken
+
+	userValidate repository.UsersRepository
 }
+
+
+
+
+
 
 func (a *authUseCase) UserAuth(user models.UserLogin) (token string, err error) {
 
-	// dmmyName := "Carly Cruikshank"
-dmmyEmail := "ccruikshank0@slideshare.net"
-dmmyPassword := "asfweg3t4vSFGQWE"
 
+newName, _ := a.userValidate.GetUserName(user.Email)
+err, valid := a.userValidate.ValidateUserLogin(user.Email, user.Password)
 
-	if user.Email == dmmyEmail && user.Password == dmmyPassword {	
-		token, err := a.tokenService.CreateAccessToken(&user)
+if err != nil {
+	return "", err
+}
+
+	if valid {	
+		token, err := a.tokenService.CreateAccessToken(user.Email, newName)
 		if err != nil {
 			return "nil", err
 		}
@@ -35,9 +46,10 @@ dmmyPassword := "asfweg3t4vSFGQWE"
 
 }
 
-func NewAuthUseCase(service authenticator.AccessToken) AuthUseCase{
+func NewAuthUseCase(service authenticator.AccessToken, userValidate repository.UsersRepository ) AuthUseCase{
 	authUseCase := new(authUseCase)
 	authUseCase.tokenService = service
+	authUseCase.userValidate = userValidate
 
 	return authUseCase
 }

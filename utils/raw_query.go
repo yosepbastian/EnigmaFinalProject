@@ -8,6 +8,10 @@ const (
 	SELECT_USER_BY_EMAIL    = `SELECT * FROM users where email = $1`
 	SELECT_EMAIL_FOR_UPDATE = `SELECT * FROM users WHERE email = $1 FOR UPDATE`
 	UPDATE_USER             = `UPDATE users SET balance = :balance WHERE id = :id`
+	SELECT_USER_NAME		= `SELECT name FROM users where email = $1`
+
+	//validate user login
+	VALIDATE_USER_LOGIN = `SELECT EXISTS(SELECT 1 FROM users WHERE email=$1 AND password=$2)`
 
 	//stocks
 	SELECT_STOCKS_BY_NAME = `SELECT * FROM stocks WHERE name=$1`
