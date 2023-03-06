@@ -14,6 +14,7 @@ type StocksController struct {
 	stocks      usecase.StocksUseCase
 	sellAndBuy  usecase.OrderUseCase
 	authUseCase usecase.AuthUseCase
+	portoUsecase usecase.PortfoliosUseCase
 }
 
 func (pc *StocksController) GetAll(ctx *gin.Context) {
@@ -107,6 +108,7 @@ func (oc *StocksController) CreateNewOrderSell(ctx *gin.Context) {
 		})
 		return
 	}
+	
 
 	err := oc.sellAndBuy.OrderSell(&newSell)
 	if err != nil {
@@ -121,14 +123,32 @@ func (oc *StocksController) CreateNewOrderSell(ctx *gin.Context) {
 	})
 }
 
-func NewStocksController(routerGroup *gin.RouterGroup, stocksUc usecase.StocksUseCase, orderUc usecase.OrderUseCase, authUseCase usecase.AuthUseCase, tokenMdw middleware.AuthTokenMiddleWare) *StocksController {
+func (oc *StocksController) GetPortfolio(ctx *gin.Context){
+newAsset,err := oc.portoUsecase.GetPortoByUserId("4293e5aa-9799-4bab-9e2d-f80901a862d1")
+
+if err != nil {
+	ctx.JSON(500, gin.H{
+		"message": err.Error(),
+	})
+}
+	ctx.JSON(200,gin.H{
+		"message" : "OK",
+		"data" : newAsset,			
+	})
+}
+
+func NewStocksController(routerGroup *gin.RouterGroup, stocksUc usecase.StocksUseCase, orderUc usecase.OrderUseCase, authUseCase usecase.AuthUseCase, tokenMdw middleware.AuthTokenMiddleWare, portoUsecase usecase.PortfoliosUseCase) *StocksController {
 	newStocksController := StocksController{
 		rg:          routerGroup,
 		stocks:      stocksUc,
 		sellAndBuy:  orderUc,
 		authUseCase: authUseCase,
+		portoUsecase: portoUsecase,
+
 	}
 	newStocksController.rg.POST("/auth", newStocksController.UserAuth)
+	newStocksController.rg.GET("/portfolio", newStocksController.GetPortfolio)
+
 	protectedGroup := newStocksController.rg.Group("/order", tokenMdw.RequireToken())
 	protectedGroup.GET("/stocks", newStocksController.GetAll)
 	protectedGroup.POST("/buy", newStocksController.BuyStocks)

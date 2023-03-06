@@ -2,8 +2,9 @@ package models
 
 type Asset struct{
 	StockName string
-	Price int
+	Price float64
 	Quantity int
-	Profit int
+	Profit float64
+	TotalProfit float64
 
 }

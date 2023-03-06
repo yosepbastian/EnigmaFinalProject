@@ -22,6 +22,13 @@ const (
 	INSERT_PORTFOLIOS           = `INSERT INTO portfolios (id, user_id, stock_id, quantity) VALUES (:id, :userid, :stockid, :quantity)`
 	GET_BY_USER_ID_AND_STOCK_ID = `SELECT * FROM portfolios WHERE user_id = $1 AND stock_id = $2`
 	UPDATE_PORTFOLIOS           = `UPDATE portfolios SET quantity = :quantity WHERE user_id = :userid AND stock_id = :stockid`
+	GET_USER_PORTFOLIOS = `select b.name, a.quantity, a.stock_id from portfolios as a left join stocks as b on a.stock_id=b.id where a.user_id=$1`
+
+	// get last time sell
+	GET_LAST_TIME_SELL = `SELECT created_at FROM transactions where user_id=$1 and stock_id=$2 and transaction_type='SELL' order by created_at Desc limit 1`
+
+	// get average price and total quantity
+	GET_AVERAGE_PRICE_AND_QUANTITY = `SELECT AVG(price)::numeric(10,2) as average, sum(quantity) as quantity FROM transactions where user_id=$1 and stock_id=$2 and created_at > $3`
 
 	//transaction
 

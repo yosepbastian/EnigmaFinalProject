@@ -5,6 +5,8 @@ import "kel1-stockbite-projects/usecase"
 type UseCaseManager interface {
 	StocksUseCase() usecase.StocksUseCase
 	OrderUseCase() usecase.OrderUseCase
+	PortfoliosUseCase() usecase.PortfoliosUseCase
+
 	
 }
 
@@ -21,6 +23,10 @@ func (u *usecaseManager) UserUseCase() usecase.UsersUseCase {
 
 func (u *usecaseManager) OrderUseCase() usecase.OrderUseCase {
 	return usecase.NewOrderUseCase(u.repomanager.PortfoliosRepository(), u.repomanager.StocksRepository(), u.repomanager.TransactionRepository(), u.repomanager.UsersRepository())
+}
+
+func (u *usecaseManager) 	PortfoliosUseCase() usecase.PortfoliosUseCase {
+	return usecase.NewPortfoliosUseCase(u.repomanager.PortfoliosRepository())
 }
 
 func NewUseCaseManager(repoManager RepositoryManager) UseCaseManager {
