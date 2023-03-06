@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"fmt"
 	"kel1-stockbite-projects/models"
 	"kel1-stockbite-projects/utils"
 	"kel1-stockbite-projects/utils/infostock"
@@ -49,60 +48,88 @@ func (p *portFoliosRepository) GetByIdandStockId(userID string, stockID int) (mo
 	return portfolio, nil
 }
 
-func (p *portFoliosRepository) 	GetUserPortfolio(userId string) ([]models.Asset, error) {
-	// GET PROFIT - TOTAL PRICE CURRENT - TOTAL PRICE BUY 
+func (p *portFoliosRepository) GetUserPortfolio(userId string) ([]models.Asset, error) {
+	// GET PROFIT - TOTAL PRICE CURRENT - TOTAL PRICE BUY
 	var asset []models.Asset
 	var assetTmp models.Asset
-	var totalProfitTmp float64 = 0
+	var totalProfitTmp, profit float64
 
 	var portfolioJoin []models.PortFoliosJoin
 
 	var avgqtty models.AvgQtty
-
 
 	err := p.db.Select(&portfolioJoin, utils.GET_USER_PORTFOLIOS, userId)
 
 	if err != nil {
 		return asset, err
 	}
-	replacer := strings.NewReplacer("T", " ", "Z","")
+	replacer := strings.NewReplacer("T", " ", "Z", "")
 
+	for _, portoProf := range portfolioJoin {
 
-	for _, porto := range portfolioJoin{
+		price, _ := infostock.GetPrice(portoProf.NameStock)
 
-		
-		price, _:= infostock.GetPrice(porto.NameStock)
-		
-	p.db.Get(&avgqtty, utils.GET_LAST_TIME_SELL, userId, porto.StockID )
+		sErr := p.db.Get(&avgqtty, utils.GET_SELL_STATUS, portoProf.StockID, userId)
 
-	newTime := replacer.Replace(avgqtty.TimeStamp)
-	fmt.Println("waktu", newTime)
-	//2023-03-01 16:00:45.370145
-	//2023-03-05 05:05:29.182844
+		p.db.Get(&avgqtty, utils.GET_LAST_TIME_SELL, userId, portoProf.StockID)
 
+		newTime := replacer.Replace(avgqtty.TimeStamp)
 
-		p.db.Get(&avgqtty, utils.GET_AVERAGE_PRICE_AND_QUANTITY, userId, porto.StockID, newTime)
+		if sErr == nil {
+			p.db.Get(&avgqtty, utils.GET_AVERAGE_PRICE_AND_QUANTITY, userId, portoProf.StockID, newTime)
 
+			profit = float64((avgqtty.Qqty * int64(price) * 100)) - (avgqtty.Avg * float64(avgqtty.Qqty) * 100)
 
-		profit := float64((avgqtty.Qqty * int64(price)) ) - (avgqtty.Avg * float64(avgqtty.Qqty))
-		totalProfitTmp += profit
+			totalProfitTmp += profit
+
+		} else {
+			p.db.Get(&avgqtty, utils.GET_AVERAGE_PRICE_AND_QUANTITY_NO_SELL, userId, portoProf.StockID)
+
+			profit = float64((avgqtty.Qqty * int64(price) * 100)) - (avgqtty.Avg * float64(avgqtty.Qqty*100))
+
+			totalProfitTmp += profit
+
+		}
+
+	}
+
+	for _, porto := range portfolioJoin {
+
+		price, _ := infostock.GetPrice(porto.NameStock)
+
+		sErr := p.db.Get(&avgqtty, utils.GET_SELL_STATUS, porto.StockID, userId)
+
+		p.db.Get(&avgqtty, utils.GET_LAST_TIME_SELL, userId, porto.StockID)
+
+		newTime := replacer.Replace(avgqtty.TimeStamp)
+
+		if sErr == nil {
+			p.db.Get(&avgqtty, utils.GET_AVERAGE_PRICE_AND_QUANTITY, userId, porto.StockID, newTime)
+
+			profit = float64((avgqtty.Qqty * int64(price) * 100)) - (avgqtty.Avg * float64(avgqtty.Qqty) * 100)
+
+		} else {
+			p.db.Get(&avgqtty, utils.GET_AVERAGE_PRICE_AND_QUANTITY_NO_SELL, userId, porto.StockID)
+
+			profit = float64((avgqtty.Qqty * int64(price) * 100)) - (avgqtty.Avg * float64(avgqtty.Qqty*100))
+
+		}
 
 		assetTmp = models.Asset{
-			StockName: porto.NameStock,
-			Price: price,
-			Quantity: int(avgqtty.Qqty),
-			Profit: profit,
+			StockName:   porto.NameStock,
+			Price:       price,
+			Quantity:    int(avgqtty.Qqty),
+			Profit:      profit,
 			TotalProfit: totalProfitTmp,
 		}
 
 		asset = append(asset, assetTmp)
 
-
 	}
-return asset, nil
+
+	return asset, nil
 
 }
-
 
 func (r *portFoliosRepository) Update(porto *models.PortFolios) error {
 	_, err := r.db.NamedExec(utils.UPDATE_PORTFOLIOS, porto)

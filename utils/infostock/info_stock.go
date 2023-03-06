@@ -11,13 +11,11 @@ func GetPrice(stockName string) (float64, error) {
 
 	q, err := quote.Get(stockName)
 
-
 	if err != nil {
 		return 00.0, err
 	}
 
 	price := q.Ask
-
 
 	return price, nil
 

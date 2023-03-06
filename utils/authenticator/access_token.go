@@ -14,11 +14,10 @@ type AccessToken interface {
 type accessToken struct {
 	conf config.TokenConfig
 }
+
 var JwtSigningMethod = jwt.SigningMethodHS256
 var JwtSignatureKey = []byte("DWici392-sl93wcFD@")
 var ApplicationName = "stockbite"
-
-
 
 func (t *accessToken) CreateAccessToken(email string, name string) (string, error) {
 	now := time.Now().UTC()
@@ -29,9 +28,8 @@ func (t *accessToken) CreateAccessToken(email string, name string) (string, erro
 			Issuer: ApplicationName,
 		},
 
-		Email:    email,
-		Name: name,
-		
+		Email: email,
+		Name:  name,
 	}
 	claims.IssuedAt = now.Unix()
 	claims.ExpiresAt = end.Unix()

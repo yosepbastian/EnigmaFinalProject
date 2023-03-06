@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"github.com/google/uuid"
-
 )
 
 type OrderUseCase interface {
@@ -133,7 +132,7 @@ func (t *orderUseCase) OrderBuy(userId string, email string, stockName string, q
 		UserID:          userId,
 		StockID:         stock.Id,
 		Quantity:        quantity,
-		Price:           totalCost,
+		Price:           price,
 		TransactionType: "buy",
 	}
 

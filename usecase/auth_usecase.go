@@ -8,9 +8,7 @@ import (
 
 //dummy credential just for  testing
 
-
-
-type AuthUseCase interface{
+type AuthUseCase interface {
 	UserAuth(user models.UserLogin) (token string, err error)
 }
 type authUseCase struct {
@@ -19,22 +17,16 @@ type authUseCase struct {
 	userValidate repository.UsersRepository
 }
 
-
-
-
-
-
 func (a *authUseCase) UserAuth(user models.UserLogin) (token string, err error) {
 
+	newName, _ := a.userValidate.GetUserName(user.Email)
+	err, valid := a.userValidate.ValidateUserLogin(user.Email, user.Password)
 
-newName, _ := a.userValidate.GetUserName(user.Email)
-err, valid := a.userValidate.ValidateUserLogin(user.Email, user.Password)
+	if err != nil {
+		return "", err
+	}
 
-if err != nil {
-	return "", err
-}
-
-	if valid {	
+	if valid {
 		token, err := a.tokenService.CreateAccessToken(user.Email, newName)
 		if err != nil {
 			return "nil", err
@@ -46,7 +38,7 @@ if err != nil {
 
 }
 
-func NewAuthUseCase(service authenticator.AccessToken, userValidate repository.UsersRepository ) AuthUseCase{
+func NewAuthUseCase(service authenticator.AccessToken, userValidate repository.UsersRepository) AuthUseCase {
 	authUseCase := new(authUseCase)
 	authUseCase.tokenService = service
 	authUseCase.userValidate = userValidate
