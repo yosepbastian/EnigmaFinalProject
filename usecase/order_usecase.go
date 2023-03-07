@@ -3,11 +3,11 @@ package usecase
 import (
 	"errors"
 	"fmt"
+	"kel1-stockbite-projects/invoice"
 	"kel1-stockbite-projects/models"
 	"kel1-stockbite-projects/repository"
 	"kel1-stockbite-projects/utils"
 	"strconv"
-
 )
 
 type OrderUseCase interface {
@@ -86,6 +86,7 @@ func (s *orderUseCase) OrderSell(newSell *models.Transaction) error {
 	if Terr != nil {
 		return errors.New("error has occurred when trying to add new transaction")
 	}
+	
 	return nil
 }
 
@@ -143,6 +144,11 @@ func (t *orderUseCase) OrderBuy(userId string, email string, stockName string, q
 		return err
 
 	}
+	err = invoice.GenerateInvoicePDF(userId, stockName, quantity, price, totalCost)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
