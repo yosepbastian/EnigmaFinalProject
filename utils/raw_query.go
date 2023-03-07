@@ -36,8 +36,8 @@ const (
 
 	//transaction
 
-	INSERT_TRANSACTION = `INSERT INTO transactions (id, user_id, stock_id, quantity, price, transaction_type) VALUES(:id, :userid, :stockid, :quantity, :price, :transactiontype)`
-
+	INSERT_TRANSACTION         = `INSERT INTO transactions (id, user_id, stock_id, quantity, price, transaction_type) VALUES(:id, :userid, :stockid, :quantity, :price, :transactiontype)`
+	GetAll_TRANSACTION         = `SELECT * FROM transactions`
 	SELECT_STOCK_NAME          = "SELECT name, price FROM stocks where name=$1"
 	SELECT_QUANTITY_STOCK_USER = "SELECT quantity FROM portfolios WHERE user_id=$1 AND stock_id=$2"
 	UPDATE_QUANTITY_STOCK_USER = "UPDATE portfolios SET quantity=$1 WHERE user_id=$2 AND stock_id=$3"

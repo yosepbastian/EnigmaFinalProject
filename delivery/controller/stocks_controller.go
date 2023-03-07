@@ -134,15 +134,11 @@ func NewStocksController(routerGroup *gin.RouterGroup, stocksUc usecase.StocksUs
 		authUseCase:  authUseCase,
 		portoUsecase: portoUsecase,
 	}
-	newStocksController.rg.POST("/auth", newStocksController.UserAuth)
 
 	protectedGroup := newStocksController.rg.Group("/order", tokenMdw.RequireToken())
 	protectedGroup.GET("/stocks", newStocksController.GetAll)
 	protectedGroup.POST("/buy", newStocksController.BuyStocks)
 	protectedGroup.POST("/sell", newStocksController.CreateNewOrderSell)
-
-	protectedGetGroup := newStocksController.rg.Group("/get", tokenMdw.RequireToken())
-	protectedGetGroup.GET("/portfolio", newStocksController.GetPortfolio)
 
 	return &newStocksController
 }

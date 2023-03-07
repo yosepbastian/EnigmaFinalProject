@@ -35,10 +35,12 @@ func Server() *appServer {
 }
 
 func (a *appServer) initHandlers() {
-	publicRoute := a.engine.Group("/login")
+	publicRoute := a.engine.Group("/stockbite")
 	tokenMdw := middleware.NewTokenValidator(a.tokenService)
 	controller.NewStocksController(publicRoute, a.useCaseManager.StocksUseCase(), a.useCaseManager.OrderUseCase(), a.authUseCase, tokenMdw, a.useCaseManager.PortfoliosUseCase())
 	controller.NewUploadAndDownload(publicRoute)
+	controller.NewAdminController(publicRoute, a.useCaseManager.UserUseCase(), a.authUseCase, a.useCaseManager.TxUseCase(), tokenMdw)
+	controller.NewUserController(publicRoute, a.useCaseManager.UserUseCase(), a.authUseCase, tokenMdw, a.useCaseManager.PortfoliosUseCase())
 
 }
 

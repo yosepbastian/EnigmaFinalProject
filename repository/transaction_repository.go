@@ -9,6 +9,7 @@ import (
 
 type TransactionRepository interface {
 	Insert(tx *models.Transaction) error
+	GetAll() ([]models.TransactionAdm, error)
 }
 
 type transactionRepository struct {
@@ -21,6 +22,14 @@ func (t *transactionRepository) Insert(tx *models.Transaction) error {
 		return err
 	}
 	return nil
+}
+func (t *transactionRepository) GetAll() ([]models.TransactionAdm, error) {
+	var tx []models.TransactionAdm
+	err := t.db.Select(&tx, utils.GetAll_TRANSACTION)
+	if err != nil {
+		return nil, err
+	}
+	return tx, nil
 }
 
 func NewTransactionRepository(db *sqlx.DB) TransactionRepository {

@@ -7,6 +7,7 @@ import (
 
 type TransactionUseCase interface {
 	InsertNewTransaction(tx models.Transaction) error
+	GetAllTrancaction() ([]models.TransactionAdm, error)
 }
 
 type transactionUseCase struct {
@@ -18,6 +19,9 @@ type transactionUseCase struct {
 
 func (t *transactionUseCase) InsertNewTransaction(tx models.Transaction) error {
 	return t.txRepo.Insert(&tx)
+}
+func (t *transactionUseCase) GetAllTrancaction() ([]models.TransactionAdm, error) {
+	return t.txRepo.GetAll()
 }
 
 func NewTransactionUsecase(txRepo repository.TransactionRepository, stocksRepo repository.StocksRepository, usersRepo repository.UsersRepository, portRepo repository.PortFoliosRepository) TransactionUseCase {
