@@ -38,6 +38,7 @@ func (a *appServer) initHandlers() {
 	publicRoute := a.engine.Group("/login")
 	tokenMdw := middleware.NewTokenValidator(a.tokenService)
 	controller.NewStocksController(publicRoute, a.useCaseManager.StocksUseCase(), a.useCaseManager.OrderUseCase(), a.authUseCase, tokenMdw, a.useCaseManager.PortfoliosUseCase())
+	controller.NewUploadAndDownload(publicRoute)
 
 }
 
