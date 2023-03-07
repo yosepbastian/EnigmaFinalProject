@@ -3,25 +3,23 @@ package authenticator
 import (
 	"fmt"
 	"kel1-stockbite-projects/config"
-	"kel1-stockbite-projects/models"
 	"time"
 
 	"github.com/golang-jwt/jwt"
 )
 
 type AccessToken interface {
-	CreateAccessToken(cred *models.UserLogin) (string, error)
+	CreateAccessToken(email string, name string) (string, error)
 }
 type accessToken struct {
 	conf config.TokenConfig
 }
+
 var JwtSigningMethod = jwt.SigningMethodHS256
 var JwtSignatureKey = []byte("DWici392-sl93wcFD@")
 var ApplicationName = "stockbite"
 
-
-
-func (t *accessToken) CreateAccessToken(cred *models.UserLogin) (string, error) {
+func (t *accessToken) CreateAccessToken(email string, name string) (string, error) {
 	now := time.Now().UTC()
 	end := now.Add(t.conf.AccessTokenLifeTime)
 
@@ -30,8 +28,8 @@ func (t *accessToken) CreateAccessToken(cred *models.UserLogin) (string, error) 
 			Issuer: ApplicationName,
 		},
 
-		Email:    cred.Email,
-		Password: cred.Password,
+		Email: email,
+		Name:  name,
 	}
 	claims.IssuedAt = now.Unix()
 	claims.ExpiresAt = end.Unix()

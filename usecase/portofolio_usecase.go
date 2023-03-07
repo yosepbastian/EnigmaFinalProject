@@ -13,6 +13,7 @@ type PortfoliosUseCase interface {
 	CheckAndCreatePortUser(userId string, stockId int, quantity float64) error
 	CheckQtyStockUser(userId string, stockId string) (int, error)
 	UpdatePortoStok(quantity int, userId string, stockId string) error
+	GetPortoByUserId(userId string) ([]models.Asset, error)
 }
 
 type portfoliosUseCase struct {
@@ -43,6 +44,10 @@ func (p *portfoliosUseCase) CheckQtyStockUser(userId string, stockId string) (in
 }
 func (p *portfoliosUseCase) UpdatePortoStok(quantity int, userId string, stockId string) error {
 	return p.portfoliosRepo.UpdatePortoStok(quantity, userId, stockId)
+}
+
+func (p *portfoliosUseCase) GetPortoByUserId(userId string) ([]models.Asset, error) {
+	return p.portfoliosRepo.GetUserPortfolio(userId)
 }
 
 func NewPortfoliosUseCase(pRepo repository.PortFoliosRepository) PortfoliosUseCase {

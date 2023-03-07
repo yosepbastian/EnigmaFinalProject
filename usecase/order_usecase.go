@@ -7,6 +7,7 @@ import (
 	"kel1-stockbite-projects/repository"
 	"kel1-stockbite-projects/utils"
 	"strconv"
+
 )
 
 type OrderUseCase interface {
@@ -129,7 +130,7 @@ func (t *orderUseCase) OrderBuy(userId string, email string, stockName string, q
 		UserID:          userId,
 		StockID:         stock.Id,
 		Quantity:        quantity,
-		Price:           totalCost,
+		Price:           price,
 		TransactionType: "buy",
 	}
 

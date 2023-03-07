@@ -25,7 +25,7 @@ func Server() *appServer {
 	repo := manager.NewRepositoryManager(infra)
 	tokenService := authenticator.NewAccessToken(config.TokenConfig)
 	use_case := manager.NewUseCaseManager(repo)
-	authUserCase := usecase.NewAuthUseCase(tokenService)
+	authUserCase := usecase.NewAuthUseCase(tokenService, repo.UsersRepository())
 
 	return &appServer{
 		engine:         ginEngine,
@@ -37,7 +37,7 @@ func Server() *appServer {
 func (a *appServer) initHandlers() {
 	publicRoute := a.engine.Group("/login")
 	tokenMdw := middleware.NewTokenValidator(a.tokenService)
-	controller.NewStocksController(publicRoute, a.useCaseManager.StocksUseCase(), a.useCaseManager.OrderUseCase(), a.authUseCase, tokenMdw)
+	controller.NewStocksController(publicRoute, a.useCaseManager.StocksUseCase(), a.useCaseManager.OrderUseCase(), a.authUseCase, tokenMdw, a.useCaseManager.PortfoliosUseCase())
 
 }
 

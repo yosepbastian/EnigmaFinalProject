@@ -11,13 +11,13 @@ import (
 
 type Config struct {
 	DataSourceName string
-	TokenConfig 
+	TokenConfig
 }
 
-type TokenConfig struct{
-	ApplicationName string
-	JwtSignatureKey string
-	JwtSigningMethod *jwt.SigningMethodHMAC
+type TokenConfig struct {
+	ApplicationName     string
+	JwtSignatureKey     string
+	JwtSigningMethod    *jwt.SigningMethodHMAC
 	AccessTokenLifeTime time.Duration
 }
 
@@ -39,12 +39,11 @@ func (c *Config) InitDb() {
 	c.DataSourceName = dsn
 
 	c.TokenConfig = TokenConfig{
-		ApplicationName: "stockbite",
-		JwtSignatureKey: "DWici392-sl93wcFD@",
-		JwtSigningMethod: jwt.SigningMethodHS256,
+		ApplicationName:     "stockbite",
+		JwtSignatureKey:     "DWici392-sl93wcFD@",
+		JwtSigningMethod:    jwt.SigningMethodHS256,
 		AccessTokenLifeTime: 20 * time.Minute,
 	}
-
 
 }
 

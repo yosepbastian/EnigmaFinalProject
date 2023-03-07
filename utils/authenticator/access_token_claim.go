@@ -4,6 +4,6 @@ import "github.com/golang-jwt/jwt"
 
 type JwtClaims struct {
 	jwt.StandardClaims
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email string `json:"email"`
+	Name  string `json:"name"`
 }
